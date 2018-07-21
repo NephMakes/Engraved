@@ -1,0 +1,20 @@
+## Interface: 80000
+## Title: Engraved
+## Version: 2.0.8
+## Notes: Stylish combat resource display
+## Author: Neph / lieandswell <Nephthys @ Hyjal-US>
+## DefaultState: enabled
+## SavedVariablesPerCharacter: EngravedOptions
+
+Engraved.xml
+Engraved.lua
+Runes.lua
+DeathKnight.lua
+RogueDruid.lua
+Mage.lua
+Warlock.lua
+Paladin.lua
+Monk.lua
+OptionsLibrary.lua
+Options.lua
+Localization.lua
