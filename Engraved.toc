@@ -1,6 +1,6 @@
-## Interface: 80000
+## Interface: 80300
 ## Title: Engraved
-## Version: 2.0.8
+## Version: 2.0.9
 ## Notes: Stylish combat resource display
 ## Author: Neph / lieandswell <Nephthys @ Hyjal-US>
 ## DefaultState: enabled
