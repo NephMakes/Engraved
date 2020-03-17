@@ -17,4 +17,4 @@ Features:
 * Can automatically hide out of combat
 
 Recent updates: 
-* Updated for WoW 8.0: Battle for Azeroth
+* Updated for patch 8.3
