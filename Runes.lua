@@ -15,6 +15,9 @@ function RuneFrame:OnEvent(event, ...)
 		if ( (unit == "player") and (self.powerToken == powerToken) ) then
 			self:UpdatePower();
 		end
+	elseif ( event == "PLAYER_TARGET_CHANGED" ) then
+		-- For rogues and druids in classic, otherwise event not registered
+		self:UpdatePower();
 	elseif ( event == "UNIT_MAXPOWER" ) then
 		local unit, powerToken = ...;
 		if ( (unit == "player") and (self.powerToken == powerToken) ) then

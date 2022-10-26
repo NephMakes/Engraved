@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 30400
 ## Title: Engraved
 ## Version: 2.1.0
 ## Notes: Stylish combat resource display
@@ -8,14 +8,10 @@
 
 Engraved.xml
 Engraved.lua
-Engraved_Retail.lua
+Engraved_Wrath.lua
 Runes.lua
 DeathKnight.lua
 RogueDruid.lua
-Mage.lua
-Warlock.lua
-Paladin.lua
-Monk.lua
 OptionsLibrary.lua
 Options.lua
 Localization.lua

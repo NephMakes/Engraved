@@ -14,7 +14,9 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:SetupClass();
 		Engraved:ApplyOptions();
 		Engraved:Update();
+		-- print("Engraved "..event)
 	elseif ( event == "PLAYER_SPECIALIZATION_CHANGED" ) then 
+		-- Retail only, otherwise event not registered
 		Engraved:SetupClass();
 		Engraved:ApplyOptions();
 		Engraved:Update();
@@ -32,7 +34,7 @@ end
 EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent);
 EngravedFrame:RegisterEvent("ADDON_LOADED");
 EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player");
+-- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player");
 EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
 
 function Engraved:OnAddonLoaded()
@@ -49,6 +51,7 @@ function Engraved:OnAddonLoaded()
 	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset); 
 end
 
+--[[
 function Engraved:SetupClass()
 	RuneFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 	RuneFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
@@ -78,6 +81,7 @@ function Engraved:SetupClass()
 		RuneFrame:UnregisterAllEvents();
 	end
 end
+]]--
 
 function Engraved:ApplyOptions()
 	local options = EngravedOptions;

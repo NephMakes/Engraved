@@ -50,7 +50,6 @@ function Rogue:UpdateMaxComboPoints()
 end
 
 
-
 --[[ Druid ]]--
 
 Engraved.Druid = {};
@@ -77,5 +76,3 @@ function Druid:OnShapeshift()
 		RuneFrame:UnregisterEvent("UNIT_MAXPOWER", "player");
 	end
 end
-
-
