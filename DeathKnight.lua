@@ -31,6 +31,13 @@ function DeathKnight:UpdateRunes()
 	end
 end
 
+local runeColor = {
+	[1] = { r = 1.0, g = 0.2, b = 0.0 },  -- Blood
+	[2] = { r = 0.5, g = 0.8, b = 1.0 },  -- Frost
+	[3] = { r = 0.3, g = 1.0, b = 0.4 },  -- Unholy
+	[4] = { r = 0.50, g = 0.32, b = 0.55 },  -- Death
+}
+
 function DeathKnight:UpdateRune(runeIndex)
 	-- self is RuneFrame
 	local rune = self.Runes[runeIndex];
@@ -42,7 +49,7 @@ function DeathKnight:UpdateRune(runeIndex)
 		local runeType = GetRuneType(runeIndex)
 		if runeType then
 			rune.runeType = runeType
-			-- rune:SetRuneColor()
+			rune:SetRuneColor(runeColor[runeType])
 		end
 	end
 
