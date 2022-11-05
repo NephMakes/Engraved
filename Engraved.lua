@@ -14,9 +14,8 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:SetupClass();
 		Engraved:ApplyOptions();
 		Engraved:Update();
-		-- print("Engraved "..event)
 	elseif ( event == "PLAYER_SPECIALIZATION_CHANGED" ) then 
-		-- Retail only, otherwise event not registered
+		-- Only for retail WoW. Event not registered in classic. 
 		Engraved:SetupClass();
 		Engraved:ApplyOptions();
 		Engraved:Update();
@@ -24,6 +23,7 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:ApplyOptions();
 		Engraved:Update();
 	elseif ( event == "PLAYER_LEVEL_UP" ) then 
+		-- For Paladins in retail WoW. Otherwise event not registered. 
 		local arg1 = ...;
 		if ( arg1 >= PALADINPOWERBAR_SHOW_LEVEL ) then
 			Engraved:Update();
@@ -34,8 +34,9 @@ end
 EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent);
 EngravedFrame:RegisterEvent("ADDON_LOADED");
 EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
--- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player");
 EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+-- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player"); 
+	-- See SetUpClass_Retail.lua
 
 function Engraved:OnAddonLoaded()
 	Engraved:LocalizeStrings();
@@ -53,33 +54,7 @@ end
 
 --[[
 function Engraved:SetupClass()
-	RuneFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
-	RuneFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
-	RuneFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
-	RuneFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
-	RuneFrame:RegisterEvent("PET_BATTLE_OPENING_START");
-	RuneFrame:RegisterEvent("PET_BATTLE_OVER");
-
-	local _, class = UnitClass("player");
-	local spec = GetSpecialization();
-	if ( class == "DEATHKNIGHT" ) then
-		Engraved.DeathKnight:Setup();
-	elseif ( class == "ROGUE" ) then
-		Engraved.Rogue:Setup();
-	elseif ( class == "DRUID" ) then
-		Engraved.Druid:Setup();
-	elseif ( class == "WARLOCK" ) then
-		Engraved.Warlock:Setup();
-	elseif ( class == "MAGE" ) and ( spec == SPEC_MAGE_ARCANE ) then
-		Engraved.Mage:Setup();
-	elseif ( class == "PALADIN" ) and ( spec == SPEC_PALADIN_RETRIBUTION ) then
-		Engraved.Paladin:Setup();
-	elseif ( class == "MONK" ) and ( spec == SPEC_MONK_WINDWALKER ) then
-		Engraved.Monk:Setup();
-	else
-		RuneFrame.inUse = false;
-		RuneFrame:UnregisterAllEvents();
-	end
+	-- See SetUpClass_Retail.lua and SetUpClass_Classic.lua
 end
 ]]--
 

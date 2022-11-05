@@ -16,7 +16,7 @@ function RuneFrame:OnEvent(event, ...)
 			self:UpdatePower();
 		end
 	elseif ( event == "PLAYER_TARGET_CHANGED" ) then
-		-- For rogues and druids in classic, otherwise event not registered
+		-- For rogues and druids in Classic, otherwise event not registered
 		self:UpdatePower();
 	elseif ( event == "UNIT_MAXPOWER" ) then
 		local unit, powerToken = ...;
@@ -32,6 +32,7 @@ function RuneFrame:OnEvent(event, ...)
 	elseif ( (event == "PLAYER_REGEN_ENABLED") and self.inUse ) then
 		self:SetOutOfCombat();
 	elseif ( event == "UNIT_DISPLAYPOWER" ) then
+		-- TO DO: Needs different classic/retail behavior
 		local unit = ...;
 		if ( unit == "player" ) then
 			Engraved.Druid:OnShapeshift();
@@ -259,7 +260,6 @@ function RuneFrame:InitializeTabDropDown()
 	]]--
 
 end
-
 
 
 --[[ Runes ]]--

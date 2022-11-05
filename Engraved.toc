@@ -8,7 +8,7 @@
 
 Engraved.xml
 Engraved.lua
-Engraved_Retail.lua
+SetUpClass_Retail.lua
 Runes.lua
 DeathKnight.lua
 RogueDruid.lua
