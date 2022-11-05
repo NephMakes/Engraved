@@ -12,15 +12,15 @@ function Engraved:SetupClass()
 
 	local _, class = UnitClass("player");
 	if ( class == "DEATHKNIGHT" ) then
-		Engraved.DeathKnight:SetupClassic();
+		Engraved.DeathKnight:Setup();
 	elseif ( class == "ROGUE" ) then
-		Engraved.Rogue:Setup();  -- Classic conditionals in Rogue functions
+		Engraved.Rogue:Setup();
 	elseif ( class == "DRUID" ) then
-		Engraved.Druid:Setup();  -- Classic conditionals in Druid functions
+		Engraved.Druid:Setup();  
 	else
 		RuneFrame.inUse = false;
 		RuneFrame:UnregisterAllEvents();
 	end
 
-	RuneFrame.isClassic = true;
+	RuneFrame.isClassic = true;  -- For conditionals in class functions
 end

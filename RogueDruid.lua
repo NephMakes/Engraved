@@ -21,10 +21,11 @@ end
 
 function Rogue:UpdateComboPoints()
 	-- self is RuneFrame
+	local comboPoints
 	if self.isClassic then
-		local comboPoints = GetComboPoints("player", "target");
+		comboPoints = GetComboPoints("player", "target");
 	else
-		local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints);
+		comboPoints = UnitPower("player", Enum.PowerType.ComboPoints);
 	end
 	for i = 1, comboPoints do
 		if ( not self.Runes[i].on ) then

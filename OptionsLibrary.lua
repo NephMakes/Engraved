@@ -1,4 +1,4 @@
---[[ Nephilist Options Library v0.5 ]]--
+--[[ Nephilist Options Library v0.6 ]]--
 
 -- Caveats: 
 --   CheckButton variables must be boolean (not 1/0)
@@ -66,7 +66,8 @@ end
 
 function MyAddon:CreateOptionsPanel() 
 	local name = "InterfaceOptions"..addonName.."Panel"
-	local optionsPanel = CreateFrame("Frame", name, InterfaceOptionsFramePanelContainer); 
+	-- local optionsPanel = CreateFrame("Frame", name, InterfaceOptionsFramePanelContainer); 
+	local optionsPanel = CreateFrame("Frame", name, UIParent); 
 
 	local title = GetAddOnMetadata(addonName, "Title");
 	local version = GetAddOnMetadata(addonName, "Version");

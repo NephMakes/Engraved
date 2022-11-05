@@ -15,24 +15,31 @@ function RuneFrame:OnEvent(event, ...)
 		if ( (unit == "player") and (self.powerToken == powerToken) ) then
 			self:UpdatePower();
 		end
-	elseif ( event == "PLAYER_TARGET_CHANGED" ) then
-		-- For rogues and druids in Classic, otherwise event not registered
-		self:UpdatePower();
 	elseif ( event == "UNIT_MAXPOWER" ) then
 		local unit, powerToken = ...;
 		if ( (unit == "player") and (self.powerToken == powerToken) ) then
 			self:UpdateMaxPower();
 		end
 	elseif ( event == "RUNE_POWER_UPDATE" ) then
+		-- For death knights
 		local runeIndex, usable = ...;
+		self:UpdatePower();  -- So we can sort runes (not yet implemented)
 		-- self:UpdateRune(runeIndex);
-		self:UpdatePower();
+	elseif ( event == "RUNE_TYPE_UPDATE" ) then
+		-- For death knight in classic, otherwise event not registered
+		local runeIndex = ...;
+		if ( runeIndex ) then
+			print("Engraved: RUNE_TYPE_UPDATE " .. runeIndex)
+			self:UpdateRune(runeIndex);
+		end
 	elseif ( (event == "PLAYER_REGEN_DISABLED") and self.inUse ) then
 		self:SetShown();
 	elseif ( (event == "PLAYER_REGEN_ENABLED") and self.inUse ) then
 		self:SetOutOfCombat();
+	elseif ( event == "PLAYER_TARGET_CHANGED" ) then
+		-- For rogues and druids in classic, otherwise event not registered
+		self:UpdatePower();
 	elseif ( event == "UNIT_DISPLAYPOWER" ) then
-		-- TO DO: Needs different classic/retail behavior
 		local unit = ...;
 		if ( unit == "player" ) then
 			Engraved.Druid:OnShapeshift();
@@ -102,10 +109,11 @@ end
 
 function RuneFrame:SetRuneColor(color)
 	for _, rune in pairs(self.Runes) do
-		rune.background:SetVertexColor(color.r, color.g, color.b);
-		rune.fill:SetVertexColor(color.r, color.g, color.b);
-		rune.charge:SetVertexColor(color.r, color.g, color.b);
-		rune.glow:SetVertexColor(color.r, color.g, color.b);
+		-- rune.background:SetVertexColor(color.r, color.g, color.b);
+		-- rune.fill:SetVertexColor(color.r, color.g, color.b);
+		-- rune.charge:SetVertexColor(color.r, color.g, color.b);
+		-- rune.glow:SetVertexColor(color.r, color.g, color.b);
+		rune:SetRuneColor(color)
 	end
 end
 
@@ -267,6 +275,14 @@ end
 Engraved.Rune = {};
 local Rune = Engraved.Rune;
 
+function Rune:SetRuneColor(color)
+	self.background:SetVertexColor(color.r, color.g, color.b);
+	self.fill:SetVertexColor(color.r, color.g, color.b);
+	self.charge:SetVertexColor(color.r, color.g, color.b);
+	self.glow:SetVertexColor(color.r, color.g, color.b);
+end
+
+
 function Rune:TurnOn()
 	self.animOut:Stop();
 	if ( not self.animIn:IsPlaying() ) then
@@ -390,6 +406,7 @@ function Rune:OnResizeStop()
 end
 
 for _, rune in pairs(RuneFrame.Runes) do
+	rune.SetRuneColor  = Rune.SetRuneColor;
 	rune.TurnOn  = Rune.TurnOn;
 	rune.TurnOff = Rune.TurnOff;
 	rune.ChargeUp  = Rune.ChargeUp;

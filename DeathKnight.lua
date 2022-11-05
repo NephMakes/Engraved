@@ -6,25 +6,9 @@ local RuneFrame  = EngravedRuneFrame;
 function DeathKnight:Setup()
 	RuneFrame.inUse = true;
 	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
-	RuneFrame.powerToken = "RUNES";
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunes;
-	RuneFrame.UpdateRune = DeathKnight.UpdateRune;
-	for i = 1, 6 do
-		local rune = RuneFrame.Runes[i];
-		rune:Show();
-		rune.on = true;
-		rune.inUse = true;
+	if RuneFrame.isClassic then
+		RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE");
 	end
-	for i = 7, #RuneFrame.Runes do
-		RuneFrame.Runes[i]:Hide();
-		RuneFrame.Runes[i].inUse = false;
-	end
-end
-
--- Not yet implemented: 
-function DeathKnight:SetupClassic()
-	RuneFrame.inUse = true;
-	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
 	RuneFrame.powerToken = "RUNES";
 	RuneFrame.UpdatePower = DeathKnight.UpdateRunes;
 	RuneFrame.UpdateRune = DeathKnight.UpdateRune;
@@ -41,16 +25,26 @@ function DeathKnight:SetupClassic()
 end
 
 function DeathKnight:UpdateRunes()
+	-- self is RuneFrame
 	for runeIndex = 1, 6 do
 		self:UpdateRune(runeIndex);
 	end
 end
 
 function DeathKnight:UpdateRune(runeIndex)
+	-- self is RuneFrame
 	local rune = self.Runes[runeIndex];
 	local start, duration, runeReady = GetRuneCooldown(runeIndex);
 	-- print(GetTime(), "Rune", runeIndex, start, duration, runeReady);
 	-- print("runeIndex", runeIndex);
+
+	if self.isClassic then
+		local runeType = GetRuneType(runeIndex)
+		if runeType then
+			rune.runeType = runeType
+			-- rune:SetRuneColor()
+		end
+	end
 
 	if ( runeReady and not rune.on ) then
 		rune:TurnOn();
