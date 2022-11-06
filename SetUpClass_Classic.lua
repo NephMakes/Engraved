@@ -13,6 +13,7 @@ function Engraved:SetupClass()
 	local _, class = UnitClass("player");
 	if ( class == "DEATHKNIGHT" ) then
 		Engraved.DeathKnight:Setup();
+		Engraved:ShowClassicRuneColors()
 	elseif ( class == "ROGUE" ) then
 		Engraved.Rogue:Setup();
 	elseif ( class == "DRUID" ) then
@@ -23,4 +24,13 @@ function Engraved:SetupClass()
 	end
 
 	RuneFrame.isClassic = true;  -- For conditionals in class functions
+end
+
+function Engraved:ShowClassicRuneColors()
+	local optionsPanel = Engraved.OptionsPanel
+	optionsPanel.runeColor:Hide()
+	optionsPanel.runeColorBlood:Show()
+	optionsPanel.runeColorFrost:Show()
+	optionsPanel.runeColorUnholy:Show()
+	optionsPanel.runeColorDeath:Show()
 end

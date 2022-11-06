@@ -26,10 +26,9 @@ function RuneFrame:OnEvent(event, ...)
 		self:UpdatePower();  -- So we can sort runes (not yet implemented)
 		-- self:UpdateRune(runeIndex);
 	elseif ( event == "RUNE_TYPE_UPDATE" ) then
-		-- For death knight in classic, otherwise event not registered
+		-- For death knights in classic, otherwise event not registered
 		local runeIndex = ...;
 		if ( runeIndex ) then
-			print("Engraved: RUNE_TYPE_UPDATE " .. runeIndex)
 			self:UpdateRune(runeIndex);
 		end
 	elseif ( (event == "PLAYER_REGEN_DISABLED") and self.inUse ) then

@@ -1,3 +1,5 @@
+-- OptionsLibrary.lua must be loaded before this file
+
 local addonName, Engraved = ...
 
 
@@ -9,6 +11,10 @@ Engraved.Defaults = {
 	OutOfCombatAlpha = 0.2,
 	PrioritizeRunes = true, 
 	RuneColor = { r = 1, g = 1, b = 1 }, 
+	RuneColorBlood = { r = 1, g = 0.2, b = 0 }, 
+	RuneColorFrost = { r = 0.5, g = 0.8, b = 1 }, 
+	RuneColorUnholy = { r = 0.4, g = 1, b = 0.2 }, 
+	RuneColorDeath = { r = 0.8, g = 0.5, b = 0.8 }, 
 	RuneFramePosition = { "CENTER", nil, "CENTER", 0, -300 }, 
 	RuneFrameSize = { 340, 120 }, 
 	RunePositions = {
@@ -31,6 +37,10 @@ function Engraved:SetClassDefaults(class)
 	if ( class == "DEATHKNIGHT" ) then
 		defaults.RuneTheme = "FROSTMOURNE"; 
 		defaults.RuneColor = { r = 0.5, g = 0.8, b = 1.0 }; 
+--		defaults.RuneColorBlood = { r = 1, g = 0.2, b = 0 }, 
+--		defaults.RuneColorFrost = { r = 0.5, g = 0.8, b = 1 }, 
+--		defaults.RuneColorUnholy = { r = 0.4, g = 1, b = 0.2 }, 
+--		defaults.RuneColorDeath = { r = 0.8, g = 0.5, b = 0.8 }, 
 		defaults.RuneFrameSize = { 404, 80 }; 
 		defaults.RunePositions[1] = { "CENTER", -162, 0 }; 
 		defaults.RunePositions[2] = { "CENTER", -97, 0 }; 
@@ -113,16 +123,10 @@ optionsPanel.defaultsFunc = function()
 	runeFrame:SetLocked(options.IsLocked);
 end;
 
-optionsPanel.runeColor = optionsPanel:CreateColorPicker("RuneColor");
-local runeColor = optionsPanel.runeColor;
-runeColor:SetPoint("TOPLEFT", optionsPanel.subtext, "BOTTOMLEFT", 2, -34);
-runeColor.onValueChanged = function(value) 
-	EngravedRuneFrame:SetRuneColor(value);
-end
-
 optionsPanel.runeTheme = optionsPanel:CreateDropDownMenu("RuneTheme");
 local runeTheme = optionsPanel.runeTheme;
-runeTheme:SetPoint("TOPLEFT", optionsPanel.runeColor, "BOTTOMLEFT", -15, -48);
+-- runeTheme:SetPoint("TOPLEFT", optionsPanel.runeColor, "BOTTOMLEFT", -16, -42);
+runeTheme:SetPoint("TOPLEFT", optionsPanel.subtext, "BOTTOMLEFT", -14, -42);
 runeTheme.onValueChanged = function(value) 
 	EngravedRuneFrame:SetRuneTheme(value);
 end
@@ -133,6 +137,46 @@ runeTheme.optionList = {
 	{text = "Frostmourne", value = "FROSTMOURNE"}, 
 	{text = "Eldritch", value = "ELDRITCH"} 
 }
+
+optionsPanel.runeColor = optionsPanel:CreateColorPicker("RuneColor");
+local runeColor = optionsPanel.runeColor;
+-- runeColor:SetPoint("TOPLEFT", optionsPanel.subtext, "BOTTOMLEFT", 2, -34);
+runeColor:SetPoint("TOPLEFT", optionsPanel.runeTheme, "BOTTOMLEFT", 18, -28);
+runeColor.onValueChanged = function(value) 
+	EngravedRuneFrame:SetRuneColor(value);
+end
+
+optionsPanel.runeColorBlood = optionsPanel:CreateColorPicker("RuneColorBlood");
+local runeColorBlood = optionsPanel.runeColorBlood;
+runeColorBlood:SetPoint("TOPLEFT", optionsPanel.runeTheme, "BOTTOMLEFT", 18, -28);
+runeColorBlood.onValueChanged = function(value) 
+	-- EngravedRuneFrame:SetRuneColor(value);
+end
+runeColorBlood:Hide()
+
+optionsPanel.runeColorFrost = optionsPanel:CreateColorPicker("RuneColorFrost");
+local runeColorFrost = optionsPanel.runeColorFrost;
+runeColorFrost:SetPoint("LEFT", optionsPanel.runeColorBlood, "RIGHT", 128, 0);
+runeColorFrost.onValueChanged = function(value) 
+	-- EngravedRuneFrame:SetRuneColor(value);
+end
+runeColorFrost:Hide()
+
+optionsPanel.runeColorUnholy = optionsPanel:CreateColorPicker("RuneColorUnholy");
+local runeColorUnholy = optionsPanel.runeColorUnholy;
+runeColorUnholy:SetPoint("LEFT", optionsPanel.runeColorFrost, "RIGHT", 128, 0);
+runeColorUnholy.onValueChanged = function(value) 
+	-- EngravedRuneFrame:SetRuneColor(value);
+end
+runeColorUnholy:Hide()
+
+optionsPanel.runeColorDeath = optionsPanel:CreateColorPicker("RuneColorDeath");
+local runeColorDeath = optionsPanel.runeColorDeath;
+runeColorDeath:SetPoint("LEFT", optionsPanel.runeColorUnholy, "RIGHT", 128, 0);
+runeColorDeath.onValueChanged = function(value) 
+	-- EngravedRuneFrame:SetRuneColor(value);
+end
+runeColorDeath:Hide()
 
 optionsPanel.outOfCombatAlpha = optionsPanel:CreateSlider("OutOfCombatAlpha");
 local outOfCombatAlpha = optionsPanel.outOfCombatAlpha;

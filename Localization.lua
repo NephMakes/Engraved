@@ -30,6 +30,10 @@ Localization["enUS"] = {
 	-- PRIORITIZE_RUNES = "Prioritize runes",
 	RESET_POSITIONS = "Reset positions",
 	RUNE_COLOR = "Rune color", 
+	RUNE_COLOR_BLOOD = "Blood rune color", 
+	RUNE_COLOR_FROST = "Frost rune color", 
+	RUNE_COLOR_UNHOLY = "Unholy rune color", 
+	RUNE_COLOR_DEATH = "Death rune color", 
 	RUNE = "Rune", 
 	RUNE_THEME = "Rune theme", 
 	-- SHADOWMOON = "Shadowmoon", 
@@ -133,8 +137,13 @@ function Engraved:SetAllTheText()
 	optionsPanel.outOfCombatAlpha.Low:SetText(strings.HIDDEN);
 
 	optionsPanel.runeColor.Text:SetText(strings.RUNE_COLOR);
+	optionsPanel.runeColorBlood.Text:SetText(strings.RUNE_COLOR_BLOOD);
+	optionsPanel.runeColorFrost.Text:SetText(strings.RUNE_COLOR_FROST);
+	optionsPanel.runeColorUnholy.Text:SetText(strings.RUNE_COLOR_UNHOLY);
+	optionsPanel.runeColorDeath.Text:SetText(strings.RUNE_COLOR_DEATH);
 
 	local runeTheme = optionsPanel.runeTheme;
+	runeTheme.Label:SetText(strings.RUNE_THEME);
 	runeTheme.Text:SetText(strings.RUNE_THEME);
 	runeTheme.optionList[1].text = strings.ICECROWN;
 	runeTheme.optionList[2].text = strings.NEXUS;
