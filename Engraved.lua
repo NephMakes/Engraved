@@ -36,7 +36,7 @@ EngravedFrame:RegisterEvent("ADDON_LOADED");
 EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
 -- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player"); 
-	-- See SetUpClass_Retail.lua
+-- See SetUpClass_Retail.lua
 
 function Engraved:OnAddonLoaded()
 	Engraved:LocalizeStrings();
@@ -45,18 +45,15 @@ function Engraved:OnAddonLoaded()
 	local _, class = UnitClass("player"); 
 	Engraved:SetClassDefaults(class); 
 
-	local reset = false;
-	if (EngravedOptions) and (EngravedOptions.Version) and (EngravedOptions.Version < "2.0") then 
-		reset = true;
+	local reset = false
+	if EngravedOptions and EngravedOptions.Version and EngravedOptions.Version < "2.0" then 
+		reset = true
 	end
-	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset); 
+	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset);
 end
 
---[[
-function Engraved:SetupClass()
-	-- See SetUpClass_Retail.lua and SetUpClass_Classic.lua
-end
-]]--
+-- function Engraved:SetupClass() end
+-- See SetUpClass_Retail.lua, SetUpClass_Classic.lua
 
 function Engraved:ApplyOptions()
 	local options = EngravedOptions;

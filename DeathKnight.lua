@@ -1,7 +1,7 @@
 local _, Engraved = ...
 Engraved.DeathKnight = {};
 local DeathKnight = Engraved.DeathKnight;
-local RuneFrame  = EngravedRuneFrame;
+local RuneFrame = EngravedRuneFrame;
 
 function DeathKnight:Setup()
 	RuneFrame.inUse = true;
@@ -24,19 +24,44 @@ function DeathKnight:Setup()
 	end
 end
 
+function DeathKnight:SetupClassic()
+	local options = EngravedOptions
+	RuneFrame.runeColor = {}
+	RuneFrame.runeColor[1] = options.RuneColorBlood
+	RuneFrame.runeColor[2] = options.RuneColorFrost
+	RuneFrame.runeColor[3] = options.RuneColorUnholy
+	RuneFrame.runeColor[4] = options.RuneColorDeath
+	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
+end
+
+function DeathKnight:SetRuneTypeColor(runeType, runeColor)
+	-- Called by optionsPanel.runeColorXXXX
+	RuneFrame.runeColor[runeType] = runeColor
+	RuneFrame:SetRuneColor()
+end
+
+function DeathKnight:SetRuneColorClassic(runeColorRetail)
+	-- self is RuneFrame
+	-- Called by Engraved:ApplyOptions() when entering world or talents changed
+	-- Called by DeathKnight:SetRuneTypeColor() when user changes rune color
+	for i, rune in pairs(self.Runes) do
+		local runeType = GetRuneType(i)
+		if runeType then
+			rune.runeType = runeType
+			rune:SetRuneColor(self.runeColor[runeType])
+		end
+	end	
+end
+
+
+--[[ Combat functions ]]--
+
 function DeathKnight:UpdateRunes()
 	-- self is RuneFrame
 	for runeIndex = 1, 6 do
 		self:UpdateRune(runeIndex);
 	end
 end
-
-local runeColor = {
-	[1] = { r = 1.0, g = 0.2, b = 0.0 },  -- Blood
-	[2] = { r = 0.5, g = 0.8, b = 1.0 },  -- Frost
-	[3] = { r = 0.4, g = 1.0, b = 0.2 },  -- Unholy
-	[4] = { r = 0.8, g = 0.5, b = 0.8 },  -- Death
-}
 
 function DeathKnight:UpdateRune(runeIndex)
 	-- self is RuneFrame
@@ -49,7 +74,7 @@ function DeathKnight:UpdateRune(runeIndex)
 		local runeType = GetRuneType(runeIndex)
 		if runeType then
 			rune.runeType = runeType
-			rune:SetRuneColor(runeColor[runeType])
+			rune:SetRuneColor(self.runeColor[runeType])
 		end
 	end
 

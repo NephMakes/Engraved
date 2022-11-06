@@ -108,10 +108,6 @@ end
 
 function RuneFrame:SetRuneColor(color)
 	for _, rune in pairs(self.Runes) do
-		-- rune.background:SetVertexColor(color.r, color.g, color.b);
-		-- rune.fill:SetVertexColor(color.r, color.g, color.b);
-		-- rune.charge:SetVertexColor(color.r, color.g, color.b);
-		-- rune.glow:SetVertexColor(color.r, color.g, color.b);
 		rune:SetRuneColor(color)
 	end
 end

@@ -1,7 +1,7 @@
 -- OptionsLibrary.lua must be loaded before this file
 
 local addonName, Engraved = ...
-
+local DeathKnight = Engraved.DeathKnight
 
 --[[ Defaults ]]-- 
 
@@ -37,10 +37,6 @@ function Engraved:SetClassDefaults(class)
 	if ( class == "DEATHKNIGHT" ) then
 		defaults.RuneTheme = "FROSTMOURNE"; 
 		defaults.RuneColor = { r = 0.5, g = 0.8, b = 1.0 }; 
---		defaults.RuneColorBlood = { r = 1, g = 0.2, b = 0 }, 
---		defaults.RuneColorFrost = { r = 0.5, g = 0.8, b = 1 }, 
---		defaults.RuneColorUnholy = { r = 0.4, g = 1, b = 0.2 }, 
---		defaults.RuneColorDeath = { r = 0.8, g = 0.5, b = 0.8 }, 
 		defaults.RuneFrameSize = { 404, 80 }; 
 		defaults.RunePositions[1] = { "CENTER", -162, 0 }; 
 		defaults.RunePositions[2] = { "CENTER", -97, 0 }; 
@@ -150,7 +146,7 @@ optionsPanel.runeColorBlood = optionsPanel:CreateColorPicker("RuneColorBlood");
 local runeColorBlood = optionsPanel.runeColorBlood;
 runeColorBlood:SetPoint("TOPLEFT", optionsPanel.runeTheme, "BOTTOMLEFT", 18, -28);
 runeColorBlood.onValueChanged = function(value) 
-	-- EngravedRuneFrame:SetRuneColor(value);
+	DeathKnight:SetRuneTypeColor(1, value)
 end
 runeColorBlood:Hide()
 
@@ -158,7 +154,7 @@ optionsPanel.runeColorFrost = optionsPanel:CreateColorPicker("RuneColorFrost");
 local runeColorFrost = optionsPanel.runeColorFrost;
 runeColorFrost:SetPoint("LEFT", optionsPanel.runeColorBlood, "RIGHT", 128, 0);
 runeColorFrost.onValueChanged = function(value) 
-	-- EngravedRuneFrame:SetRuneColor(value);
+	DeathKnight:SetRuneTypeColor(2, value)
 end
 runeColorFrost:Hide()
 
@@ -166,7 +162,7 @@ optionsPanel.runeColorUnholy = optionsPanel:CreateColorPicker("RuneColorUnholy")
 local runeColorUnholy = optionsPanel.runeColorUnholy;
 runeColorUnholy:SetPoint("LEFT", optionsPanel.runeColorFrost, "RIGHT", 128, 0);
 runeColorUnholy.onValueChanged = function(value) 
-	-- EngravedRuneFrame:SetRuneColor(value);
+	DeathKnight:SetRuneTypeColor(3, value)
 end
 runeColorUnholy:Hide()
 
@@ -174,7 +170,7 @@ optionsPanel.runeColorDeath = optionsPanel:CreateColorPicker("RuneColorDeath");
 local runeColorDeath = optionsPanel.runeColorDeath;
 runeColorDeath:SetPoint("LEFT", optionsPanel.runeColorUnholy, "RIGHT", 128, 0);
 runeColorDeath.onValueChanged = function(value) 
-	-- EngravedRuneFrame:SetRuneColor(value);
+	DeathKnight:SetRuneTypeColor(4, value)
 end
 runeColorDeath:Hide()
 
