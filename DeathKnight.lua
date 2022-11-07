@@ -25,14 +25,15 @@ function DeathKnight:Setup()
 end
 
 function DeathKnight:SetupClassic()
-	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE");
+	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
+	RuneFrame.UpdateRune = DeathKnight.UpdateRuneClassic
+	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
 	local options = EngravedOptions
 	RuneFrame.runeColor = {}
 	RuneFrame.runeColor[1] = options.RuneColorBlood
 	RuneFrame.runeColor[2] = options.RuneColorFrost
 	RuneFrame.runeColor[3] = options.RuneColorUnholy
 	RuneFrame.runeColor[4] = options.RuneColorDeath
-	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
 end
 
 function DeathKnight:SetRuneTypeColor(runeType, runeColor)
@@ -45,12 +46,8 @@ function DeathKnight:SetRuneColorClassic(runeColorRetail)
 	-- self is RuneFrame
 	-- Called by Engraved:ApplyOptions() when entering world or talents changed
 	-- Called by DeathKnight:SetRuneTypeColor() when user changes rune color
-	for i, rune in pairs(self.Runes) do
-		local runeType = GetRuneType(i)
-		if runeType then
-			rune.runeType = runeType
-			rune:SetRuneColor(self.runeColor[runeType])
-		end
+	for runeIndex, rune in pairs(self.Runes) do
+		self:UpdateRuneType(runeIndex)
 	end	
 end
 
@@ -71,18 +68,34 @@ function DeathKnight:UpdateRune(runeIndex)
 	local start, duration, runeReady = GetRuneCooldown(runeIndex);
 	if runeReady and not rune.on then
 		rune:TurnOn()
-		rune:ChargeDown()  -- "Flash" animation
+		rune:ChargeDown()
 	elseif not runeReady then
 		if rune.on then
 			rune:TurnOff()
 		end
 		if start then
-			local expirationTime = start + duration
-			local now = GetTime()
-			-- rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
-			-- rune.animChargeUp.charge:SetDuration(duration)
+			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
+			rune.animChargeUp.charge:SetDuration(duration)
+			-- In retail, runes can wait to start cooling down
+			rune:ChargeUp()
+		end
+	end
+end
+
+function DeathKnight:UpdateRuneClassic(runeIndex)
+	-- self is RuneFrame
+	local rune = self.Runes[runeIndex];
+	local start, duration, runeReady = GetRuneCooldown(runeIndex);
+	if runeReady and not rune.on then
+		rune:TurnOn()
+		rune:ChargeDown()
+	elseif not runeReady then
+		if rune.on then
+			rune:TurnOff()
+		end
+		if start then
 			rune.animChargeUp.hold:SetDuration(0)
-			rune.animChargeUp.charge:SetDuration(expirationTime - now)
+			rune.animChargeUp.charge:SetDuration(start + duration - GetTime())
 			rune:ChargeUp()
 		end
 	end
@@ -90,9 +103,9 @@ end
 
 function DeathKnight:UpdateRuneType(runeIndex)
 	-- self is RuneFrame
-	local rune = self.Runes[runeIndex];
 	local runeType = GetRuneType(runeIndex)
 	if runeType then
+		local rune = self.Runes[runeIndex];
 		rune.runeType = runeType
 		rune:SetRuneColor(self.runeColor[runeType])
 	end
