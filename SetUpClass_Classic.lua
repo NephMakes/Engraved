@@ -14,7 +14,7 @@ function Engraved:SetupClass()
 	if class == "DEATHKNIGHT" then
 		Engraved.DeathKnight:Setup()
 		Engraved.DeathKnight:SetupClassic()
-		Engraved:ShowClassicRuneColorOptions()
+		Engraved.DeathKnight:ShowClassicRuneColorOptions()
 	elseif class == "ROGUE" then
 		Engraved.Rogue:Setup()
 		Engraved.Rogue:SetupClassic()
@@ -25,13 +25,4 @@ function Engraved:SetupClass()
 		RuneFrame.inUse = false
 		RuneFrame:UnregisterAllEvents()
 	end
-end
-
-function Engraved:ShowClassicRuneColorOptions()
-	local optionsPanel = Engraved.OptionsPanel
-	optionsPanel.runeColor:Hide()
-	optionsPanel.runeColorBlood:Show()
-	optionsPanel.runeColorFrost:Show()
-	optionsPanel.runeColorUnholy:Show()
-	optionsPanel.runeColorDeath:Show()
 end

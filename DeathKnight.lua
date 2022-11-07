@@ -3,8 +3,6 @@ Engraved.DeathKnight = {};
 local DeathKnight = Engraved.DeathKnight;
 local RuneFrame = EngravedRuneFrame;
 
-local GetTime = GetTime
-
 function DeathKnight:Setup()
 	RuneFrame.inUse = true;
 	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
@@ -25,7 +23,9 @@ function DeathKnight:Setup()
 end
 
 function DeathKnight:SetupClassic()
+	-- Called after DeathKnight:Setup()
 	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
+	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic;
 	RuneFrame.UpdateRune = DeathKnight.UpdateRuneClassic
 	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
 	local options = EngravedOptions
@@ -36,10 +36,19 @@ function DeathKnight:SetupClassic()
 	RuneFrame.runeColor[4] = options.RuneColorDeath
 end
 
+function DeathKnight:ShowClassicRuneColorOptions()
+	local optionsPanel = Engraved.OptionsPanel
+	optionsPanel.runeColor:Hide()
+	optionsPanel.runeColorBlood:Show()
+	optionsPanel.runeColorFrost:Show()
+	optionsPanel.runeColorUnholy:Show()
+	optionsPanel.runeColorDeath:Show()
+end
+
 function DeathKnight:SetRuneTypeColor(runeType, runeColor)
 	-- Called by optionsPanel.runeColorXXXX
 	RuneFrame.runeColor[runeType] = runeColor
-	RuneFrame:SetRuneColor()
+	RuneFrame:SetRuneColorClassic()
 end
 
 function DeathKnight:SetRuneColorClassic(runeColorRetail)
@@ -55,17 +64,26 @@ end
 --[[ Combat functions ]]--
 
 function DeathKnight:UpdateRunes()
+	-- For retail WoW
 	-- self is RuneFrame
 	for runeIndex = 1, 6 do
-		self:UpdateRuneType(runeIndex);
-		self:UpdateRune(runeIndex);
+		self:UpdateRune(runeIndex)
+	end
+end
+
+function DeathKnight:UpdateRunesClassic()
+	-- self is RuneFrame
+	for runeIndex = 1, 6 do
+		self:UpdateRuneType(runeIndex)
+		self:UpdateRune(runeIndex)
 	end
 end
 
 function DeathKnight:UpdateRune(runeIndex)
+	-- For retail WoW
 	-- self is RuneFrame
-	local rune = self.Runes[runeIndex];
-	local start, duration, runeReady = GetRuneCooldown(runeIndex);
+	local rune = self.Runes[runeIndex]
+	local start, duration, runeReady = GetRuneCooldown(runeIndex)
 	if runeReady and not rune.on then
 		rune:TurnOn()
 		rune:ChargeDown()
@@ -84,8 +102,8 @@ end
 
 function DeathKnight:UpdateRuneClassic(runeIndex)
 	-- self is RuneFrame
-	local rune = self.Runes[runeIndex];
-	local start, duration, runeReady = GetRuneCooldown(runeIndex);
+	local rune = self.Runes[runeIndex]
+	local start, duration, runeReady = GetRuneCooldown(runeIndex)
 	if runeReady and not rune.on then
 		rune:TurnOn()
 		rune:ChargeDown()
@@ -105,7 +123,7 @@ function DeathKnight:UpdateRuneType(runeIndex)
 	-- self is RuneFrame
 	local runeType = GetRuneType(runeIndex)
 	if runeType then
-		local rune = self.Runes[runeIndex];
+		local rune = self.Runes[runeIndex]
 		rune.runeType = runeType
 		rune:SetRuneColor(self.runeColor[runeType])
 	end
