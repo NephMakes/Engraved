@@ -11,12 +11,14 @@ function Rogue:Setup()
 	RuneFrame.inUse = true;
 	RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player");
 	RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player");
-	if RuneFrame.isClassic then
-		RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED"); -- Combo points stored on target
-	end
 	RuneFrame.powerToken = "COMBO_POINTS";
 	RuneFrame.UpdatePower = Rogue.UpdateComboPoints;
 	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints;
+end
+
+function Rogue:SetupClassic()
+	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED"); -- Combo points stored on target
+	RuneFrame.isClassic = true
 end
 
 function Rogue:UpdateComboPoints()
@@ -72,6 +74,11 @@ function Druid:Setup()
 	RuneFrame.UpdatePower = Rogue.UpdateComboPoints;
 	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints;
 	Druid:OnShapeshift()
+end
+
+function Druid:SetupClassic()
+	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED"); -- Combo points stored on target
+	RuneFrame.isClassic = true
 end
 
 function Druid:OnShapeshift()

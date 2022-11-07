@@ -3,15 +3,15 @@ Engraved.DeathKnight = {};
 local DeathKnight = Engraved.DeathKnight;
 local RuneFrame = EngravedRuneFrame;
 
+local GetTime = GetTime
+
 function DeathKnight:Setup()
 	RuneFrame.inUse = true;
 	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
-	if RuneFrame.isClassic then
-		RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE");
-	end
 	RuneFrame.powerToken = "RUNES";
 	RuneFrame.UpdatePower = DeathKnight.UpdateRunes;
 	RuneFrame.UpdateRune = DeathKnight.UpdateRune;
+	RuneFrame.UpdateRuneType = DeathKnight.UpdateRuneType;
 	for i = 1, 6 do
 		local rune = RuneFrame.Runes[i];
 		rune:Show();
@@ -25,6 +25,7 @@ function DeathKnight:Setup()
 end
 
 function DeathKnight:SetupClassic()
+	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE");
 	local options = EngravedOptions
 	RuneFrame.runeColor = {}
 	RuneFrame.runeColor[1] = options.RuneColorBlood
@@ -59,6 +60,7 @@ end
 function DeathKnight:UpdateRunes()
 	-- self is RuneFrame
 	for runeIndex = 1, 6 do
+		self:UpdateRuneType(runeIndex);
 		self:UpdateRune(runeIndex);
 	end
 end
@@ -67,34 +69,34 @@ function DeathKnight:UpdateRune(runeIndex)
 	-- self is RuneFrame
 	local rune = self.Runes[runeIndex];
 	local start, duration, runeReady = GetRuneCooldown(runeIndex);
-	-- print(GetTime(), "Rune", runeIndex, start, duration, runeReady);
-	-- print("runeIndex", runeIndex);
-
-	if self.isClassic then
-		local runeType = GetRuneType(runeIndex)
-		if runeType then
-			rune.runeType = runeType
-			rune:SetRuneColor(self.runeColor[runeType])
+	if runeReady and not rune.on then
+		rune:TurnOn()
+		rune:ChargeDown()  -- "Flash" animation
+	elseif not runeReady then
+		if rune.on then
+			rune:TurnOff()
 		end
-	end
-
-	if ( runeReady and not rune.on ) then
-		rune:TurnOn();
-		rune:ChargeDown();
-	elseif ( not runeReady ) then
-		if ( rune.on ) then
-			rune:TurnOff();
-		end
-		if ( start ) then
-			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0));
-			rune.animChargeUp.charge:SetDuration(duration);
-			rune:ChargeUp();
+		if start then
+			local expirationTime = start + duration
+			local now = GetTime()
+			-- rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
+			-- rune.animChargeUp.charge:SetDuration(duration)
+			rune.animChargeUp.hold:SetDuration(0)
+			rune.animChargeUp.charge:SetDuration(expirationTime - now)
+			rune:ChargeUp()
 		end
 	end
 end
 
-
-
+function DeathKnight:UpdateRuneType(runeIndex)
+	-- self is RuneFrame
+	local rune = self.Runes[runeIndex];
+	local runeType = GetRuneType(runeIndex)
+	if runeType then
+		rune.runeType = runeType
+		rune:SetRuneColor(self.runeColor[runeType])
+	end
+end
 
 
 

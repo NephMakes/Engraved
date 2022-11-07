@@ -17,14 +17,14 @@ function Engraved:SetupClass()
 		Engraved:ShowClassicRuneColorOptions()
 	elseif class == "ROGUE" then
 		Engraved.Rogue:Setup()
+		Engraved.Rogue:SetupClassic()
 	elseif class == "DRUID" then
 		Engraved.Druid:Setup()
+		Engraved.Druid:SetupClassic()
 	else
 		RuneFrame.inUse = false
 		RuneFrame:UnregisterAllEvents()
 	end
-
-	RuneFrame.isClassic = true;  -- For conditionals in class functions
 end
 
 function Engraved:ShowClassicRuneColorOptions()
