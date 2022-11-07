@@ -17,4 +17,4 @@ Features:
 * Can automatically hide out of combat
 
 Recent updates: 
-* Updated for patch 8.3
+* Now compatible with WoW Classic (death knights, rogues, and cat druids)
