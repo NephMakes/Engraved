@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Engraved
-## Version: 2.1.0
+## Version: 2.1.2
 ## Notes: Stylish combat resource display
 ## Author: NephMakes / lieandswell
 ## DefaultState: enabled

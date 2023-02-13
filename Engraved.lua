@@ -19,7 +19,7 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:SetupClass();
 		Engraved:ApplyOptions();
 		Engraved:Update();
-	elseif ( event == "PLAYER_TALENT_UPDATE" ) then 
+	elseif ( event == "PLAYER_TALENT_UPDATE" ) or ( event == "CHARACTER_POINTS_CHANGED" ) then 
 		Engraved:ApplyOptions();
 		Engraved:Update();
 	elseif ( event == "PLAYER_LEVEL_UP" ) then 
@@ -34,7 +34,14 @@ end
 EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent);
 EngravedFrame:RegisterEvent("ADDON_LOADED");
 EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+	-- Classic Era
+	EngravedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED");
+else
+	-- Retail, Classic Wrath
+	EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+end
 -- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player"); 
 -- See SetUpClass_Retail.lua
 
