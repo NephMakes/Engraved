@@ -5,6 +5,8 @@ local addonName, Engraved = ...
 local EngravedFrame = Engraved.EngravedFrame;
 local RuneFrame     = EngravedRuneFrame;
 
+local GetSpecialization = GetSpecialization or GetPrimaryTalentTree
+
 -- Events not in Classic
 EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player");
 

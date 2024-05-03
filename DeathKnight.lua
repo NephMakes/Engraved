@@ -1,31 +1,33 @@
 local _, Engraved = ...
-Engraved.DeathKnight = {};
-local DeathKnight = Engraved.DeathKnight;
-local RuneFrame = EngravedRuneFrame;
+Engraved.DeathKnight = {}
+local DeathKnight = Engraved.DeathKnight
+local RuneFrame = EngravedRuneFrame
+
+local GetTime = GetTime
 
 function DeathKnight:Setup()
-	RuneFrame.inUse = true;
-	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
-	RuneFrame.powerToken = "RUNES";
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunes;
-	RuneFrame.UpdateRune = DeathKnight.UpdateRune;
-	RuneFrame.UpdateRuneType = DeathKnight.UpdateRuneType;
+	RuneFrame.inUse = true
+	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE")
+	RuneFrame.powerToken = "RUNES"
+	RuneFrame.UpdatePower = DeathKnight.UpdateRunes
+	RuneFrame.UpdateRune = DeathKnight.UpdateRune
+	RuneFrame.UpdateRuneType = DeathKnight.UpdateRuneType
 	for i = 1, 6 do
-		local rune = RuneFrame.Runes[i];
-		rune:Show();
-		rune.on = true;
-		rune.inUse = true;
+		local rune = RuneFrame.Runes[i]
+		rune:Show()
+		rune.on = true
+		rune.inUse = true
 	end
 	for i = 7, #RuneFrame.Runes do
-		RuneFrame.Runes[i]:Hide();
-		RuneFrame.Runes[i].inUse = false;
+		RuneFrame.Runes[i]:Hide()
+		RuneFrame.Runes[i].inUse = false
 	end
 end
 
 function DeathKnight:SetupClassic()
 	-- Called after DeathKnight:Setup()
 	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic;
+	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic
 	RuneFrame.UpdateRune = DeathKnight.UpdateRuneClassic
 	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
 	local options = EngravedOptions
@@ -111,9 +113,19 @@ function DeathKnight:UpdateRuneClassic(runeIndex)
 		if rune.on then
 			rune:TurnOff()
 		end
+		-- Slow glow
+		--[[
 		if start then
 			rune.animChargeUp.hold:SetDuration(0)
 			rune.animChargeUp.charge:SetDuration(start + duration - GetTime())
+			rune:ChargeUp()
+		end
+		]]--
+		-- Almost ready
+		if start then
+			local timeLeft = start + duration - GetTime()
+			rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+			rune.animChargeUp.charge:SetDuration(0.1)
 			rune:ChargeUp()
 		end
 	end
