@@ -14,4 +14,5 @@ DeathKnight.lua
 RogueDruid.lua
 OptionsLibrary.lua
 Options.lua
+SlashCommand.lua
 Localization.lua

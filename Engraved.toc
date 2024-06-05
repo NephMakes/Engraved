@@ -18,4 +18,5 @@ Paladin.lua
 Monk.lua
 OptionsLibrary.lua
 Options.lua
+SlashCommand.lua
 Localization.lua

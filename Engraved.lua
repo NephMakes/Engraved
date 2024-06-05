@@ -1,8 +1,8 @@
 local addonName, Engraved = ...
 
-Engraved.EngravedFrame = CreateFrame("Frame", "EngravedFrame");
-local EngravedFrame    = Engraved.EngravedFrame;
-local RuneFrame        = EngravedRuneFrame;
+Engraved.EngravedFrame = CreateFrame("Frame", "EngravedFrame")
+local EngravedFrame = Engraved.EngravedFrame
+local RuneFrame = EngravedRuneFrame
 
 function EngravedFrame:OnEvent(event, ...)
 	if ( event == "ADDON_LOADED" ) then
@@ -45,18 +45,22 @@ end
 -- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player"); 
 -- See SetUpClass_Retail.lua
 
-function Engraved:OnAddonLoaded()
-	Engraved:LocalizeStrings();
-	UIDropDownMenu_Initialize(EngravedRuneFrameTabDropDown, EngravedRuneFrame.InitializeTabDropDown, "MENU");
 
-	local _, class = UnitClass("player"); 
-	Engraved:SetClassDefaults(class); 
+--[[ General Engraved functions ]]--
+
+function Engraved:OnAddonLoaded()
+	Engraved:LocalizeStrings()
+	Engraved:AddSlashCommand()
+	UIDropDownMenu_Initialize(EngravedRuneFrameTabDropDown, RuneFrame.InitializeTabDropDown, "MENU")
+
+	local _, class = UnitClass("player")
+	Engraved:SetClassDefaults(class)
 
 	local reset = false
 	if EngravedOptions and EngravedOptions.Version and EngravedOptions.Version < "2.0" then 
 		reset = true
 	end
-	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset);
+	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset)
 end
 
 -- function Engraved:SetupClass() end
@@ -80,5 +84,11 @@ function Engraved:Update()
 	RuneFrame:UpdateShown();
 end
 
-
-
+function Engraved:ToggleLockUnlock() 
+	local isLocked = EngravedOptions.IsLocked
+	if isLocked then
+		RuneFrame:SetLocked(false)
+	else
+		RuneFrame:SetLocked(true)
+	end
+end

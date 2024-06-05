@@ -137,29 +137,29 @@ function RuneFrame:SetRuneSizes(runeSizes)
 end
 
 function RuneFrame:SetLocked(isLocked) 
-	self = RuneFrame;  -- If called from tab dropdown, self would be dropdown button
-	EngravedOptions.IsLocked = isLocked; 
-	self.isLocked = isLocked;
-	if ( isLocked ) then
-		self.Background:Hide();
-		self.Border:Hide();
-		self.Tab:Hide();
-		self:EnableMouse(false);
+	self = RuneFrame  -- If called from tab dropdown, self would be dropdown button
+	EngravedOptions.IsLocked = isLocked
+	self.isLocked = isLocked
+	if isLocked then
+		self.Background:Hide()
+		self.Border:Hide()
+		self.Tab:Hide()
+		self:EnableMouse(false)
 		for _, rune in pairs(self.Runes) do
-			rune:EnableMouse(false);
-			rune.resizeButton:Hide();
+			rune:EnableMouse(false)
+			rune.resizeButton:Hide()
 		end
 	else
-		self.Background:Show();
-		self.Border:Show();
-		self.Tab:Show();
-		self:EnableMouse(true);
+		self.Background:Show()
+		self.Border:Show()
+		self.Tab:Show()
+		self:EnableMouse(true)
 		for _, rune in pairs(self.Runes) do
-			rune:EnableMouse(true);
-			rune.resizeButton:Show();
+			rune:EnableMouse(true)
+			rune.resizeButton:Show()
 		end
 	end
-	self:UpdateShown();
+	self:UpdateShown()
 end
 
 function RuneFrame:OnDragStart()
