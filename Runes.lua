@@ -1,4 +1,4 @@
-local _, Engraved = ...
+local addonName, Engraved = ...
 
 local function round(x) 
 	return floor(x + 0.5);
@@ -227,41 +227,45 @@ function RuneFrame:UpdateSizeAndPosition()
 end
 
 function RuneFrame:Tab_OnClick(button)
-	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
-	if ( button == "RightButton" ) then
-		ToggleDropDownMenu(1, nil, EngravedRuneFrameTabDropDown, self:GetName(), 0, 0);
-		return;
+	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+	if button == "RightButton" then
+		ToggleDropDownMenu(1, nil, EngravedRuneFrameTabDropDown, self:GetName(), 0, 0)
+		return
 	end
-	CloseDropDownMenus();
+	CloseDropDownMenus()
 end
 
 function RuneFrame:InitializeTabDropDown()
+	local strings = Engraved.Strings
+	local info = UIDropDownMenu_CreateInfo()
 
-	local strings = Engraved.Strings;
-	local info = UIDropDownMenu_CreateInfo();
+	info.text = strings.OPEN_OPTIONS_MENU
+	info.func = RuneFrame.OpenOptionsPanel
+	info.isNotRadio = true
+	info.notCheckable = true
+	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
 
-	info.text = strings.LOCK_RUNE_DISPLAY;
-	info.func = RuneFrame.SetLocked;
-	info.arg1 = true;
-	info.isNotRadio = true;
-	info.notCheckable = true;
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
+	info.text = strings.LOCK_RUNE_DISPLAY
+	info.func = RuneFrame.SetLocked
+	info.arg1 = true
+	info.isNotRadio = true
+	info.notCheckable = true
+	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
 
 	--[[
-	info.text = strings.OPEN_OPTIONS_MENU;
-	info.func = nil;
-	info.isNotRadio = true;
-	info.notCheckable = true;
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
-
-	info.text = strings.RESET_POSITIONS;
-	info.func = nil;
-	info.isNotRadio = true;
-	info.notCheckable = true;
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
+	info.text = strings.RESET_POSITIONS
+	info.func = nil
+	info.isNotRadio = true
+	info.notCheckable = true
+	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
 	]]--
-
 end
+
+function RuneFrame:OpenOptionsPanel()
+	InterfaceAddOnsList_Update()
+	InterfaceOptionsFrame_OpenToCategory(addonName)
+end
+
 
 
 --[[ Runes ]]--
