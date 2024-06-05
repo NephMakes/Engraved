@@ -188,11 +188,11 @@
 				</HighlightTexture>
 				<Scripts>
 					<OnLoad>
-						self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-						self:RegisterForDrag("LeftButton");
+						self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+						self:RegisterForDrag("LeftButton")
 					</OnLoad>
 					<OnClick>
-						EngravedRuneFrame.Tab_OnClick(self, button);
+						EngravedRuneFrame.Tab_OnClick(self, button)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -206,7 +206,7 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				self:RegisterForDrag("LeftButton");
+				self:RegisterForDrag("LeftButton")
 			</OnLoad>
 		</Scripts>
 		<!--

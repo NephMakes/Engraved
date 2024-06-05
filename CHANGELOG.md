@@ -2,10 +2,12 @@
 
 ## Engraved
 
-### v2.1.3
+### v2.2.0
 * Updated for Retail patch 10.2.7
 * Updated for Cataclysm Classic patch 4.4.0
 * Updated for Classic Era patch 1.15.2
+* Fixed Death Knight behavior in Cataclysm Classic
+* Added shortcut to options panel from tab right-click menu
 
 ### v2.1.2
 * Fixed PLAYER_TALENT_UPDATE error in Classic Era
