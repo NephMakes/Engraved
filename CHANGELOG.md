@@ -6,7 +6,7 @@
 * Updated for Retail patch 10.2.7
 * Updated for Cataclysm Classic patch 4.4.0
 * Updated for Classic Era patch 1.15.2
-* Fixed Death Knight behavior in Cataclysm Classic
+* Fixed Death Knight rune updating in Cataclysm Classic
 * Added shortcut to options panel from tab right-click menu
 * Added /engraved command to lock/unlock addon
 

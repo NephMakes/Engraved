@@ -1,13 +1,35 @@
+-- RuneFrame and Rune functions
+
 local addonName, Engraved = ...
+Engraved.Rune = {}
+local Rune = Engraved.Rune
+local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
 
 local function round(x) 
-	return floor(x + 0.5);
+	return floor(x + 0.5)
 end
 
 
---[[ Rune Frame ]]--
+--[[ RuneFrame ]]--
 
-local RuneFrame = EngravedRuneFrame;
+function RuneFrame:OnLoad()
+	self:SetScript("OnEvent", self.OnEvent)
+	self:SetScript("OnDragStart", self.OnDragStart)
+	self:SetScript("OnDragStop", self.OnDragStop)
+	self:RegisterForDrag("LeftButton")
+
+	local tab = self.Tab
+	tab:SetScript("OnClick", self.Tab_OnClick)
+	tab:SetScript("OnDragStart", function() RuneFrame:OnDragStart() end)
+	tab:SetScript("OnDragStop", function() RuneFrame:OnDragStop() end)
+	tab:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	tab:RegisterForDrag("LeftButton")
+
+	for _, rune in pairs(self.Runes) do
+		Mixin(rune, Rune)
+		rune:OnLoad()
+	end
+end
 
 function RuneFrame:OnEvent(event, ...)
 	if ( event == "UNIT_POWER_FREQUENT" ) then
@@ -49,7 +71,6 @@ function RuneFrame:OnEvent(event, ...)
 		self:UpdateShown();
 	end
 end
-RuneFrame:SetScript("OnEvent", RuneFrame.OnEvent);
 
 function RuneFrame:UpdatePower() end
 function RuneFrame:UpdateMaxPower() end
@@ -165,8 +186,6 @@ end
 function RuneFrame:OnDragStart()
 	self:StartMoving();
 end
-RuneFrame:SetScript("OnDragStart", RuneFrame.OnDragStart);
-RuneFrame.Tab:SetScript("OnDragStart", function() RuneFrame:OnDragStart() end);
 
 function RuneFrame:OnDragStop()
 	self:StopMovingOrSizing();
@@ -175,8 +194,6 @@ function RuneFrame:OnDragStop()
 	xOfs, yOfs = round(xOfs), round(yOfs);
 	EngravedOptions.RuneFramePosition = { point, relativeTo, relativePoint, xOfs, yOfs };
 end
-RuneFrame:SetScript("OnDragStop", RuneFrame.OnDragStop);
-RuneFrame.Tab:SetScript("OnDragStop", function() RuneFrame:OnDragStop() end);
 
 function RuneFrame:FitToRunes()
 	local runeLeft, runeRight, runeTop, runeBottom = {}, {}, {}, {};
@@ -267,11 +284,22 @@ function RuneFrame:OpenOptionsPanel()
 end
 
 
+--[[ Rune ]]--
 
---[[ Runes ]]--
+function Rune:OnLoad()
+	self:SetScript("OnEnter", self.OnEnter)
+	self:SetScript("OnLeave", self.OnLeave)
+	self:SetScript("OnDragStart", self.OnDragStart)
+	self:SetScript("OnDragStop", self.OnDragStop)
+	self:RegisterForDrag("LeftButton")
 
-Engraved.Rune = {};
-local Rune = Engraved.Rune;
+	local resizeButton = self.resizeButton
+	resizeButton:SetScript("OnEnter", self.ResizeButtonOnEnter)
+	resizeButton:SetScript("OnLeave", self.ResizeButtonOnLeave)
+	resizeButton:SetScript("OnDragStart", self.OnResizeStart)
+	resizeButton:SetScript("OnDragStop", self.OnResizeStop)
+	resizeButton:RegisterForDrag("LeftButton")
+end
 
 function Rune:SetRuneColor(color)
 	self.background:SetVertexColor(color.r, color.g, color.b);
@@ -279,7 +307,6 @@ function Rune:SetRuneColor(color)
 	self.charge:SetVertexColor(color.r, color.g, color.b);
 	self.glow:SetVertexColor(color.r, color.g, color.b);
 end
-
 
 function Rune:TurnOn()
 	self.animOut:Stop();
@@ -403,21 +430,9 @@ function Rune:OnResizeStop()
 	runeFrame:SetRunePositions(EngravedOptions.RunePositions);
 end
 
-for _, rune in pairs(RuneFrame.Runes) do
-	rune.SetRuneColor  = Rune.SetRuneColor;
-	rune.TurnOn  = Rune.TurnOn;
-	rune.TurnOff = Rune.TurnOff;
-	rune.ChargeUp  = Rune.ChargeUp;
-	rune.ChargeDown = Rune.ChargeDown;
-	rune.AnchorToScreen = Rune.AnchorToScreen;
-	rune:SetScript("OnEnter", Rune.OnEnter);
-	rune:SetScript("OnLeave", Rune.OnLeave);
-	rune:SetScript("OnDragStart", Rune.OnDragStart);
-	rune:SetScript("OnDragStop", Rune.OnDragStop);
-	rune.resizeButton:SetScript("OnEnter", Rune.ResizeButtonOnEnter);
-	rune.resizeButton:SetScript("OnLeave", Rune.ResizeButtonOnLeave);
-	rune.resizeButton:SetScript("OnDragStart", Rune.OnResizeStart);
-	rune.resizeButton:SetScript("OnDragStop", Rune.OnResizeStop);
+
+--[[ ]]--
+
+do
+	RuneFrame:OnLoad()
 end
-
-

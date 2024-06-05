@@ -88,21 +88,11 @@
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self:RegisterForDrag("LeftButton");
-					</OnLoad>
-				</Scripts>
 				<NormalTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up"/>
 				<HighlightTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Highlight"/>
 				<PushedTexture file="Interface\ChatFrame\UI-ChatIM-SizeGrabber-Down"/>
 			</Button>
 		</Frames>
-		<Scripts>
-			<OnLoad>
-				self:RegisterForDrag("LeftButton");
-			</OnLoad>
-		</Scripts>
 		<Animations>
 			<AnimationGroup parentKey="animIn" setToFinalAlpha="true">
 				<Alpha target="$parentFill" fromAlpha="0" toAlpha="1" duration="0.05" smoothing="IN" order="1"/>
@@ -186,15 +176,6 @@
 						<Anchor point="RIGHT" relativeTo="$parentRight" x="0" y="-7"/>
 					</Anchors>
 				</HighlightTexture>
-				<Scripts>
-					<OnLoad>
-						self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-						self:RegisterForDrag("LeftButton")
-					</OnLoad>
-					<OnClick>
-						EngravedRuneFrame.Tab_OnClick(self, button)
-					</OnClick>
-				</Scripts>
 			</Button>
 		</Frames>
 		<Layers>
@@ -204,11 +185,6 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<Scripts>
-			<OnLoad>
-				self:RegisterForDrag("LeftButton")
-			</OnLoad>
-		</Scripts>
 		<!--
 		<Animations>
 			<AnimationGroup parentKey="animIn" setToFinalAlpha="true">
