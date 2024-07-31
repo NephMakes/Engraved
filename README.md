@@ -1,9 +1,20 @@
-# Nephilist Nameplates
+# Engraved
 
-Nephilist Nameplates is a UI addon for for World of Warcraft
+Engraved is an addon for the World of Warcraft user interface. 
 
-Simple, effective nameplates
-* Easy to set up
-* Easy to read in combat
-* Can show non-moving player nameplate (even in Classic)
-* Can show threat color for tanks, healers, and damage dealers
+Engraved lets you track combat resources using art from the Warcraft universe. Engraved can track: 
+
+* Death Knight runes
+* Rogue and druid combo points
+* Warlock soul shards
+* Mage arcane charges
+* Paladin holy power
+* Monk chi
+
+Features: 
+* Several rune themes
+* Customize color and position on screen
+* Designed for readability at a glance or in peripheral vision
+* Can automatically hide out of combat
+* Compatible with WoW Classic (death knights, rogues, and cat druids)
+
