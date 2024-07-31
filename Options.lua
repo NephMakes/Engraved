@@ -29,7 +29,7 @@ Engraved.Defaults = {
 	}, 
 	RuneSizes = { 80, 80, 80, 80, 80, 80, 80, 80 },
 	RuneTheme = "ICECROWN", 
-	Version = GetAddOnMetadata(addonName, "Version")
+	Version = C_AddOns.GetAddOnMetadata(addonName, "Version")
 };
 
 function Engraved:SetClassDefaults(class)

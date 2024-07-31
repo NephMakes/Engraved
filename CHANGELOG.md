@@ -2,6 +2,10 @@
 
 ## Engraved
 
+### v2.2.1 (2024-07-31)
+* Updated Table of Contents for patches 11.0.0, 1.15.3
+* Updated API calls for patch 11.0.0
+
 ### v2.2.0
 * Updated for Retail patch 10.2.7
 * Updated for Cataclysm Classic patch 4.4.0
