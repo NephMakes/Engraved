@@ -5,9 +5,9 @@ local RuneFrame  = EngravedRuneFrame;
 
 local SPEC_MAGE_ARCANE, SPEC_MAGE_FIRE, SPEC_MAGE_FROST = 1, 2, 3;
 
-local spec = GetSpecialization();
 
 function Mage:Setup()
+    local spec = GetSpecialization();
     if spec == SPEC_MAGE_ARCANE then
         Mage:ArcaneSetup();
     elseif spec == SPEC_MAGE_FROST then
