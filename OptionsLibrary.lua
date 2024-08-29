@@ -390,14 +390,13 @@ function MyAddon:ColorPickerRefresh()
 end
 
 function MyAddon:ColorPickerOnClick()
-	ColorPickerFrame.previousValues = self.value;
-	ColorPickerFrame.func = MyAddon.ColorPickerFunc;
-	ColorPickerFrame.cancelFunc = MyAddon.ColorPickerCancelFunc;
+    local info = self.value;
+    info.swatchFunc = MyAddon.ColorPickerFunc;
+    info.previousValues = {r = self.value.r, g = self.value.g, b = self.value.b};
+	info.cancelFunc = MyAddon.ColorPickerCancelFunc;
 	ColorPickerFrame.colorPicker = self;
 	ColorPickerFrame.savedVariablesName = self:GetParent().savedVariablesName;
-	ColorPickerFrame:SetColorRGB(MyAddon:GetColor(self.value));
-	ColorPickerFrame:Hide(); -- Need to run the OnShow handler
- 	ColorPickerFrame:Show();
+	ColorPickerFrame:SetupColorPickerAndShow(info);
 end
 
 function MyAddon:ColorPickerFunc()

@@ -28,7 +28,7 @@ function Engraved:SetupClass()
 		Engraved.Druid:Setup();
 	elseif ( class == "WARLOCK" ) then
 		Engraved.Warlock:Setup();
-	elseif ( class == "MAGE" ) and ( spec == SPEC_MAGE_ARCANE ) then
+	elseif ( class == "MAGE" ) then
 		Engraved.Mage:Setup();
 	elseif ( class == "PALADIN" ) and ( spec == SPEC_PALADIN_RETRIBUTION ) then
 		Engraved.Paladin:Setup();

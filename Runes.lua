@@ -56,7 +56,7 @@ function RuneFrame:OnEvent(event, ...)
 		self:SetShown()
 	elseif (event == "PLAYER_REGEN_ENABLED") and self.inUse then
 		self:SetOutOfCombat()
-	elseif event == "PLAYER_TARGET_CHANGED" then
+	elseif event == "PLAYER_TARGET_CHANGED" or event == "UNIT_AURA" then
 		-- For rogues and druids in classic, otherwise event not registered
 		self:UpdatePower()
 	elseif event == "UNIT_DISPLAYPOWER" then
