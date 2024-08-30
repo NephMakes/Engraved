@@ -1,16 +1,15 @@
 ## Interface: 11503
 ## Title: Engraved
-## Version: 2.2.1
+## Version: 2.3.0
 ## Notes: Stylish combat resource display
-## Author: NephMakes / lieandswell
+## Author: NephMakes
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: EngravedOptions
 
 Engraved.xml
 Engraved.lua
-SetUpClass_Classic.lua
+SetUpClass_Vanilla.lua
 Runes.lua
-DeathKnight.lua
 RogueDruid.lua
 OptionsLibrary.lua
 Options.lua

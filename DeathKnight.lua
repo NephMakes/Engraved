@@ -113,7 +113,7 @@ function DeathKnight:UpdateRuneClassic(runeIndex)
 		if rune.on then
 			rune:TurnOff()
 		end
-		-- Slow glow
+		-- slowGlow
 		--[[
 		if start then
 			rune.animChargeUp.hold:SetDuration(0)
@@ -121,7 +121,7 @@ function DeathKnight:UpdateRuneClassic(runeIndex)
 			rune:ChargeUp()
 		end
 		]]--
-		-- Almost ready
+		-- almostReady
 		if start then
 			local timeLeft = start + duration - GetTime()
 			rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)

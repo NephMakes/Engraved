@@ -2,6 +2,11 @@
 
 ## Engraved
 
+### v2.3.0 (2024-XX-XX)
+* Added: Now supports Frost Mage icicles (Retail). Thanks, huiyuanai709! 
+* Fixed: All Paladin specializations can now use holy power
+* Updated Table of Contents for patch 11.0.2
+
 ### v2.2.1 (2024-07-31)
 * Updated Table of Contents for patches 11.0.0, 1.15.3
 * Updated API calls for patch 11.0.0

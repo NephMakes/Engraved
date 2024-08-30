@@ -1,4 +1,4 @@
---[[ Nephilist Options Library v0.8 ]]--
+--[[ Nephilist Options Library v0.9 ]]--
 
 -- Caveats: 
 --   CheckButton variables must be boolean (not 1/0)

@@ -1,4 +1,4 @@
-## Interface: 40400
+## Interface: 30403
 ## Title: Engraved
 ## Version: 2.3.0
 ## Notes: Stylish combat resource display
@@ -8,12 +8,10 @@
 
 Engraved.xml
 Engraved.lua
-SetUpClass_Cata.lua
+SetUpClass_Wrath.lua
 Runes.lua
 DeathKnight.lua
 RogueDruid.lua
-Paladin.lua
-# Warlock.lua
 OptionsLibrary.lua
 Options.lua
 SlashCommand.lua

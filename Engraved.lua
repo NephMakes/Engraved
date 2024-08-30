@@ -4,6 +4,24 @@ Engraved.EngravedFrame = CreateFrame("Frame", "EngravedFrame")
 local EngravedFrame = Engraved.EngravedFrame
 local RuneFrame = EngravedRuneFrame
 
+
+--[[ EngravedFrame ]]--
+
+-- Handles executive events like player class, spec, etc
+
+function EngravedFrame:OnLoad()
+	EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)
+	EngravedFrame:RegisterEvent("ADDON_LOADED")
+	EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		-- Classic Era
+		EngravedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
+	else
+		EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+	end
+	-- SetUpClass_Retail.lua registers PLAYER_SPECIALIZATION_CHANGED
+end
+
 function EngravedFrame:OnEvent(event, ...)
 	if event == "ADDON_LOADED" then
 		local arg1 = ...
@@ -31,6 +49,7 @@ function EngravedFrame:OnEvent(event, ...)
 		end
 	end
 end
+--[[
 EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)
 EngravedFrame:RegisterEvent("ADDON_LOADED")
 EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -43,6 +62,11 @@ else
 end
 -- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player") 
 -- See SetUpClass_Retail.lua
+]]--
+
+do
+	EngravedFrame:OnLoad()
+end
 
 
 --[[ General Engraved functions ]]--
@@ -88,3 +112,4 @@ function Engraved:ToggleLockUnlock()
 		RuneFrame:SetLocked(true)
 	end
 end
+

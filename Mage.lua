@@ -5,7 +5,6 @@ local RuneFrame  = EngravedRuneFrame;
 
 local SPEC_MAGE_ARCANE, SPEC_MAGE_FIRE, SPEC_MAGE_FROST = 1, 2, 3;
 
-
 function Mage:Setup()
     local spec = GetSpecialization();
     if spec == SPEC_MAGE_ARCANE then
@@ -14,6 +13,7 @@ function Mage:Setup()
         Mage:FrostSetup();
     end
 end
+
 
 --[[ Arcane ]] --
 
@@ -64,6 +64,7 @@ function Mage:UpdateArcaneMaxPower()
 	end
 	self:UpdateSizeAndPosition();
 end
+
 
 -- [[ Frost ]] --
 
