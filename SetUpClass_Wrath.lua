@@ -4,6 +4,8 @@ local addonName, Engraved = ...
 
 local RuneFrame = EngravedRuneFrame
 
+EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
+
 function Engraved:SetupClass()
 	RuneFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 	RuneFrame:RegisterEvent("PLAYER_REGEN_ENABLED")

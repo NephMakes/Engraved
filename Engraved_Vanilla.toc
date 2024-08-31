@@ -1,7 +1,7 @@
 ## Interface: 11503
 ## Title: Engraved
 ## Version: 2.3.0
-## Notes: Stylish combat resource display
+## Notes: Track class resources with Warcraft rune art
 ## Author: NephMakes
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: EngravedOptions

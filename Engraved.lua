@@ -13,6 +13,7 @@ function EngravedFrame:OnLoad()
 	EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)
 	EngravedFrame:RegisterEvent("ADDON_LOADED")
 	EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	EngravedFrame:RegisterEvent("PLAYER_LEVEL_UP")
 	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 		-- Classic Era
 		EngravedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
@@ -33,7 +34,6 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:ApplyOptions()
 		Engraved:Update()
 	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then 
-		-- Only for retail WoW. Event not registered in classic. 
 		Engraved:SetupClass()
 		Engraved:ApplyOptions()
 		Engraved:Update()
@@ -41,28 +41,11 @@ function EngravedFrame:OnEvent(event, ...)
 		Engraved:ApplyOptions()
 		Engraved:Update()
 	elseif event == "PLAYER_LEVEL_UP" then 
-		-- For Paladins in retail WoW. Otherwise event not registered. 
-		local arg1 = ...
-		if arg1 >= PALADINPOWERBAR_SHOW_LEVEL then
-			Engraved:Update()
-			self:UnregisterEvent("PLAYER_LEVEL_UP")
-		end
+		Engraved:SetupClass()
+		Engraved:ApplyOptions()
+		Engraved:Update()
 	end
 end
---[[
-EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)
-EngravedFrame:RegisterEvent("ADDON_LOADED")
-EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-	-- Classic Era
-	EngravedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-else
-	EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
-end
--- EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player") 
--- See SetUpClass_Retail.lua
-]]--
 
 do
 	EngravedFrame:OnLoad()
