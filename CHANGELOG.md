@@ -2,9 +2,11 @@
 
 ## Engraved
 
-### v2.3.0 (2024-XX-XX)
+### v2.3.0 (2024-08-31)
 * Added: Now supports Frost Mage icicles (Retail). Thanks, huiyuanai709! 
-* Added: Now supports Paladin holy power in Cataclysm classic
+* Added: Now supports Paladin holy power in Cataclysm Classic
+* Added: Now supports Warlock soul shards in Cataclysm Classic
+* Fixed: Death Knight runes now recharge properly in Cataclysm Classic
 * Fixed: All Paladin specializations can now use holy power
 * Updated Table of Contents for patch 11.0.2
 

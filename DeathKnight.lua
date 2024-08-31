@@ -24,7 +24,23 @@ function DeathKnight:Setup()
 	end
 end
 
+function DeathKnight:SetupCataclysm()
+	-- Cataclysm version
+	-- Called after DeathKnight:Setup()
+	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
+	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic
+	RuneFrame.UpdateRune = DeathKnight.UpdateRune
+	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
+	local options = EngravedOptions
+	RuneFrame.runeColor = {}
+	RuneFrame.runeColor[1] = options.RuneColorBlood
+	RuneFrame.runeColor[2] = options.RuneColorFrost
+	RuneFrame.runeColor[3] = options.RuneColorUnholy
+	RuneFrame.runeColor[4] = options.RuneColorDeath
+end
+
 function DeathKnight:SetupClassic()
+	-- Wrath version
 	-- Called after DeathKnight:Setup()
 	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
 	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic
@@ -57,7 +73,7 @@ function DeathKnight:SetRuneColorClassic(runeColorRetail)
 	-- self is RuneFrame
 	-- Called by Engraved:ApplyOptions() when entering world or talents changed
 	-- Called by DeathKnight:SetRuneTypeColor() when user changes rune color
-	for runeIndex, rune in pairs(self.Runes) do
+	for runeIndex, _ in ipairs(self.Runes) do
 		self:UpdateRuneType(runeIndex)
 	end	
 end
@@ -94,9 +110,9 @@ function DeathKnight:UpdateRune(runeIndex)
 			rune:TurnOff()
 		end
 		if start then
+			-- Runes can wait to start cooling down
 			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
 			rune.animChargeUp.charge:SetDuration(duration)
-			-- In retail, runes can wait to start cooling down
 			rune:ChargeUp()
 		end
 	end

@@ -15,7 +15,7 @@ function Engraved:SetupClass()
 	local _, class = UnitClass("player")
 	if class == "DEATHKNIGHT" then
 		Engraved.DeathKnight:Setup()
-		Engraved.DeathKnight:SetupClassic()
+		Engraved.DeathKnight:SetupCataclysm()
 		Engraved.DeathKnight:ShowClassicRuneColorOptions()
 	elseif class == "ROGUE" then
 		Engraved.Rogue:Setup()
