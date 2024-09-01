@@ -99,6 +99,15 @@ function Engraved:SetClassDefaults(class)
 		defaults.RunePositions[4] = { "CENTER", 32, 0 }; 
 		defaults.RunePositions[5] = { "CENTER", 97, 0 }; 
 		defaults.RunePositions[6] = { "CENTER", 162, 0 }; 
+	elseif ( class == "EVOKER" ) then
+		defaults.RuneTheme = "NEXUS"; 
+		defaults.RuneColor = { r = 0.6, g = 0.8, b = 1.0 }; 
+		defaults.RuneFrameSize = { 340, 80 };
+		defaults.RunePositions[1] = { "CENTER", -130, 0 }; 
+		defaults.RunePositions[2] = { "CENTER", -65, 0 }; 
+		defaults.RunePositions[3] = { "CENTER", 0, 0 }; 
+		defaults.RunePositions[4] = { "CENTER", 65, 0 }; 
+		defaults.RunePositions[5] = { "CENTER", 130, 0 }; 
 	end
 	Engraved.OptionsPanel.defaults = defaults;
 end

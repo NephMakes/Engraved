@@ -2,6 +2,9 @@
 
 ## Engraved
 
+### v2.4.0 (2024-??-??)
+* Added: Preliminary support for Evoker Essence
+
 ### v2.3.0 (2024-08-31)
 * Added: Now supports Frost Mage icicles (Retail). Thanks, huiyuanai709! 
 * Added: Now supports Paladin holy power in Cataclysm Classic

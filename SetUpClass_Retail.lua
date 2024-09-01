@@ -33,6 +33,8 @@ function Engraved:SetupClass()
 		Engraved.Paladin:Setup()
 	elseif class == "MONK" and spec == SPEC_MONK_WINDWALKER then
 		Engraved.Monk:Setup()
+	elseif class == "EVOKER" then
+		Engraved.Evoker:Setup()
 	else
 		RuneFrame.inUse = false
 		RuneFrame:UnregisterAllEvents()

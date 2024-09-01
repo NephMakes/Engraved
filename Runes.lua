@@ -145,14 +145,14 @@ function RuneFrame:SetSize(size)
 end
 
 function RuneFrame:SetRunePositions(runePositions) 
-	for i, rune in pairs(self.Runes) do
+	for i, rune in ipairs(self.Runes) do
 		rune:ClearAllPoints()
 		rune:SetPoint(unpack(runePositions[i]))
 	end
 end
 
 function RuneFrame:SetRuneSizes(runeSizes) 
-	for i, rune in pairs(self.Runes) do
+	for i, rune in ipairs(self.Runes) do
 		rune:SetSize(runeSizes[i], runeSizes[i])
 	end
 end
@@ -197,7 +197,7 @@ end
 
 function RuneFrame:FitToRunes()
 	local runeLeft, runeRight, runeTop, runeBottom = {}, {}, {}, {}
-	for i, rune in pairs(self.Runes) do
+	for _, rune in pairs(self.Runes) do
 		if rune.inUse then
 			table.insert(runeLeft, rune:GetLeft())
 			table.insert(runeRight, rune:GetRight())
@@ -320,6 +320,12 @@ function Rune:TurnOff()
 	if not self.animOut:IsPlaying() then
 		self.animOut:Play()
 	end
+	self.on = false
+end
+
+function Rune:SetOff()
+	self.fill:SetAlpha(0)
+	self.glow:SetAlpha(0)
 	self.on = false
 end
 

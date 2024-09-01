@@ -1,6 +1,6 @@
 ## Interface: 110002
 ## Title: Engraved
-## Version: 2.3.0
+## Version: 2.4.0
 ## Notes: Track class resources with Warcraft rune art
 ## Author: NephMakes
 ## X-Contributor: huiyuanai709
@@ -17,6 +17,7 @@ Mage.lua
 Warlock.lua
 Paladin.lua
 Monk.lua
+Evoker.lua
 OptionsLibrary.lua
 Options.lua
 SlashCommand.lua

@@ -7,7 +7,7 @@ local RuneFrame = EngravedRuneFrame
 
 --[[ EngravedFrame ]]--
 
--- Handles executive events like player class, spec, etc
+-- Handle executive events like class, spec, expansion, etc
 
 function EngravedFrame:OnLoad()
 	EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)

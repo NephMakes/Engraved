@@ -1,102 +1,102 @@
 local _, Engraved = ...
-local RuneFrame = EngravedRuneFrame;
+local RuneFrame = EngravedRuneFrame
+
+local POWER_TYPE_COMBO = Enum.PowerType.ComboPoints
+local POWER_TYPE_ENERGY = Enum.PowerType.Energy
 
 
 --[[ Rogue ]]--
 
-Engraved.Rogue = {};
-local Rogue = Engraved.Rogue;
+Engraved.Rogue = {}
+local Rogue = Engraved.Rogue
 
 function Rogue:Setup()
-	RuneFrame.inUse = true;
-	RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player");
-	RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player");
-	RuneFrame.powerToken = "COMBO_POINTS";
-	RuneFrame.UpdatePower = Rogue.UpdateComboPoints;
-	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints;
+	RuneFrame.inUse = true
+	RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+	RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+	RuneFrame.powerToken = "COMBO_POINTS"
+	RuneFrame.UpdatePower = Rogue.UpdateComboPoints
+	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints
 end
 
 function Rogue:SetupClassic()
-	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED"); -- Combo points stored on target
+	-- Combo points stored on target
+	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	RuneFrame.isClassic = true
 end
 
 function Rogue:UpdateComboPoints()
-	-- self is RuneFrame
-	local comboPoints
+	local power
 	if self.isClassic then
-		comboPoints = GetComboPoints("player", "target");
+		power = GetComboPoints("player", "target")
 	else
-		comboPoints = UnitPower("player", Enum.PowerType.ComboPoints);
+		power = UnitPower("player", POWER_TYPE_COMBO)
 	end
-	for i = 1, comboPoints do
-		if ( not self.Runes[i].on ) then
-			self.Runes[i]:TurnOn();
-		end
-	end
-	for i = comboPoints + 1, #self.Runes do
-		if ( self.Runes[i].inUse ) then
-			if ( self.Runes[i].on ) then
-				self.Runes[i]:TurnOff();
-			elseif ( self.Runes[i].on == nil ) then
-				-- self.Runes[i]:TurnOff();
-				self.Runes[i].fill:SetAlpha(0);
-				self.Runes[i].glow:SetAlpha(0);
-				self.Runes[i].on = false;
+	for i, rune in ipairs(self.Runes) do
+		if i <= power then
+			if not rune.on then
+				rune:TurnOn()
+			end
+		elseif rune.inUse then
+			if rune.on then
+				rune:TurnOff()
+			elseif rune.on == nil then
+				rune:SetOff()
 			end
 		end
 	end
 end
 
 function Rogue:UpdateMaxComboPoints()
-	-- self is RuneFrame
-	local maxComboPoints = UnitPowerMax("player", Enum.PowerType.ComboPoints);
-	for i = 1, maxComboPoints do
-		self.Runes[i]:Show();
-		self.Runes[i].inUse = true;
+	local maxPower = UnitPowerMax("player", POWER_TYPE_COMBO)
+	for i, rune in ipairs(self.Runes) do
+		if i <= maxPower then
+			rune.inUse = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
+		end
 	end
-	for i = maxComboPoints + 1, #self.Runes do
-		self.Runes[i]:Hide();
-		self.Runes[i].inUse = false;
-	end
-	self:UpdateSizeAndPosition();
+	self:UpdateSizeAndPosition()
 end
 
 
 --[[ Druid ]]--
 
-Engraved.Druid = {};
-local Druid = Engraved.Druid;
+Engraved.Druid = {}
+local Druid = Engraved.Druid
 
 function Druid:Setup()
-	RuneFrame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
-	RuneFrame.powerToken = "COMBO_POINTS";
-	RuneFrame.UpdatePower = Rogue.UpdateComboPoints;
-	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints;
+	RuneFrame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")
+	RuneFrame.powerToken = "COMBO_POINTS"
+	RuneFrame.UpdatePower = Rogue.UpdateComboPoints
+	RuneFrame.UpdateMaxPower = Rogue.UpdateMaxComboPoints
 	Druid:OnShapeshift()
 end
 
 function Druid:SetupClassic()
-	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED"); -- Combo points stored on target
+	-- Combo points stored on target
+	RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 	RuneFrame.isClassic = true
 end
 
 function Druid:OnShapeshift()
-	local powerType, powerToken = UnitPowerType("player");
-	if ( powerType == Enum.PowerType.Energy ) then
-		RuneFrame.inUse = true;
-		RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player");
-		RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player");
+	local powerType, powerToken = UnitPowerType("player")
+	if powerType == POWER_TYPE_ENERGY then
+		RuneFrame.inUse = true
+		RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+		RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
 		if RuneFrame.isClassic then
-			RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED");
+			RuneFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 		end
-		RuneFrame:UpdatePower();
+		RuneFrame:UpdatePower()
 	else
-		RuneFrame.inUse = false;
-		RuneFrame:UnregisterEvent("UNIT_POWER_FREQUENT", "player");
-		RuneFrame:UnregisterEvent("UNIT_MAXPOWER", "player");
+		RuneFrame.inUse = false
+		RuneFrame:UnregisterEvent("UNIT_POWER_FREQUENT", "player")
+		RuneFrame:UnregisterEvent("UNIT_MAXPOWER", "player")
 		if RuneFrame.isClassic then
-			RuneFrame:UnregisterEvent("PLAYER_TARGET_CHANGED");
+			RuneFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")
 		end
 	end
 end

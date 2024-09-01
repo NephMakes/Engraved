@@ -3,44 +3,44 @@ Engraved.Warlock = {}
 local Warlock = Engraved.Warlock
 local RuneFrame = EngravedRuneFrame
 
+local POWER_TYPE = Enum.PowerType.SoulShards
+
 function Engraved.Warlock:Setup()
 	RuneFrame.inUse = true
 	RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
 	RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
 	RuneFrame.powerToken = "SOUL_SHARDS"
-	RuneFrame.UpdateMaxPower = Warlock.UpdateMaxSoulShards
 	RuneFrame.UpdatePower = Warlock.UpdateSoulShards
+	RuneFrame.UpdateMaxPower = Warlock.UpdateMaxSoulShards
 end
 
 function Warlock:UpdateSoulShards()
-	local shards = UnitPower("player", Enum.PowerType.SoulShards)
-	for i = 1, shards do
-		if not self.Runes[i].on then
-			self.Runes[i]:TurnOn()
-		end
-	end
-	for i = shards + 1, #self.Runes do
-		if self.Runes[i].inUse then
-			if self.Runes[i].on then
-				self.Runes[i]:TurnOff()
-			elseif self.Runes[i].on == nil then 
-				self.Runes[i].fill:SetAlpha(0)
-				self.Runes[i].glow:SetAlpha(0)
-				self.Runes[i].on = false
+	local power = UnitPower("player", POWER_TYPE)
+	for i, rune in ipairs(self.Runes) do
+		if i <= power then
+			if not rune.on then
+				rune:TurnOn()
+			end
+		elseif rune.inUse then
+			if rune.on then
+				rune:TurnOff()
+			elseif rune.on == nil then
+				rune:SetOff()
 			end
 		end
 	end
 end
 
 function Warlock:UpdateMaxSoulShards()
-	local maxShards = UnitPowerMax("player", Enum.PowerType.SoulShards)
-	for i = 1, maxShards do
-		self.Runes[i].inUse = true
-		self.Runes[i]:Show()
-	end
-	for i = maxShards + 1, #RuneFrame.Runes do
-		self.Runes[i].inUse = false
-		self.Runes[i]:Hide()
+	local maxPower = UnitPowerMax("player", POWER_TYPE)
+	for i, rune in ipairs(self.Runes) do
+		if i <= maxPower then
+			rune.inUse = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
+		end
 	end
 	self:UpdateSizeAndPosition()
 end
