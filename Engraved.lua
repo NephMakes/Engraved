@@ -54,29 +54,29 @@ end
 
 function EngravedFrame:PLAYER_ENTERING_WORLD()
 	Engraved:SetupClass()
-	Engraved:ApplyOptions()
+	Engraved:SetOptions()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
 	Engraved:SetupClass()
-	Engraved:ApplyOptions()
+	Engraved:SetOptions()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_TALENT_UPDATE()
-	Engraved:ApplyOptions()
+	Engraved:SetOptions()
 	Engraved:Update()
 end
 			
 function EngravedFrame:CHARACTER_POINTS_CHANGED()
-	Engraved:ApplyOptions()
+	Engraved:SetOptions()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_LEVEL_UP()
 	Engraved:SetupClass()
-	Engraved:ApplyOptions()
+	Engraved:SetOptions()
 	Engraved:Update()
 end
 
@@ -104,22 +104,12 @@ function Engraved:OnAddonLoaded()
 	RuneFrame:OnLoad()
 end
 
-function Engraved:ApplyOptions()
-	local options = EngravedOptions
-	RuneFrame:SetRuneTheme(options.RuneTheme)
-	RuneFrame:SetRuneColor(options.RuneColor)
-	RuneFrame:SetOutOfCombatAlpha(options.OutOfCombatAlpha)
-	RuneFrame:SetPosition(options.RuneFramePosition)
-	RuneFrame:SetSize(options.RuneFrameSize)
-	RuneFrame:SetRunePositions(options.RunePositions)
-	RuneFrame:SetRuneSizes(options.RuneSizes)
-	RuneFrame:SetLocked(options.IsLocked)
+function Engraved:SetOptions()
+	RuneFrame:SetOptions(EngravedOptions)
 end
 
 function Engraved:Update()
-	RuneFrame:UpdateMaxPower()
-	RuneFrame:UpdatePower()
-	RuneFrame:UpdateShown()
+	RuneFrame:Update()
 end
 
 function Engraved:ToggleLockUnlock() 
