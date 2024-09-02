@@ -1,7 +1,6 @@
 local _, Engraved = ...
-Engraved.Mage = {};
-local Mage = Engraved.Mage;
-local RuneFrame  = EngravedRuneFrame;
+local Mage = Engraved.Mage
+local RuneFrame  = EngravedRuneFrame
 
 local SPEC_MAGE_ARCANE, SPEC_MAGE_FIRE, SPEC_MAGE_FROST = 1, 2, 3;
 

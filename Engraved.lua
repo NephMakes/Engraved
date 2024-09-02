@@ -1,50 +1,83 @@
-local addonName, Engraved = ...
+-- Engraved: Track class combat resources using Warcraft rune art
+-- by NephMakes
 
+local ENGRAVED, Engraved = ...
+
+-- Define namespaces
 Engraved.EngravedFrame = CreateFrame("Frame", "EngravedFrame")
+Engraved.Localization = {}
+Engraved.RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
+Engraved.Rune = {}
+Engraved.DeathKnight = {}
+Engraved.Rogue = {}
+Engraved.Druid = {}
+Engraved.Paladin = {}
+Engraved.Mage = {}
+Engraved.Warlock = {}
+Engraved.Monk = {}
+Engraved.Evoker = {}
+
 local EngravedFrame = Engraved.EngravedFrame
 local RuneFrame = EngravedRuneFrame
 
 
 --[[ EngravedFrame ]]--
 
--- Handle executive events like class, spec, expansion, etc
+-- Handles executive events like class, expansion, etc
 
 function EngravedFrame:OnLoad()
-	EngravedFrame:SetScript("OnEvent", EngravedFrame.OnEvent)
-	EngravedFrame:RegisterEvent("ADDON_LOADED")
-	EngravedFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	EngravedFrame:RegisterEvent("PLAYER_LEVEL_UP")
+	self:SetScript("OnEvent", EngravedFrame.OnEvent)
+	self:RegisterEvent("ADDON_LOADED")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PLAYER_LEVEL_UP")
 	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 		-- Classic Era
-		EngravedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	else
-		EngravedFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+		self:RegisterEvent("PLAYER_TALENT_UPDATE")
 	end
 	-- SetUpClass_Retail.lua registers PLAYER_SPECIALIZATION_CHANGED
 end
 
 function EngravedFrame:OnEvent(event, ...)
-	if event == "ADDON_LOADED" then
-		local arg1 = ...
-		if arg1 == addonName then
-			Engraved:OnAddonLoaded()
-		end
-	elseif event == "PLAYER_ENTERING_WORLD" then 
-		Engraved:SetupClass()
-		Engraved:ApplyOptions()
-		Engraved:Update()
-	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then 
-		Engraved:SetupClass()
-		Engraved:ApplyOptions()
-		Engraved:Update()
-	elseif (event == "PLAYER_TALENT_UPDATE") or (event == "CHARACTER_POINTS_CHANGED") then 
-		Engraved:ApplyOptions()
-		Engraved:Update()
-	elseif event == "PLAYER_LEVEL_UP" then 
-		Engraved:SetupClass()
-		Engraved:ApplyOptions()
-		Engraved:Update()
+	local f = self[event]
+	if f then
+		f(self, ...)
 	end
+end
+
+function EngravedFrame:ADDON_LOADED(addonName)
+	if addonName ~= ENGRAVED then return end
+	Engraved:OnAddonLoaded()
+	self:UnregisterEvent("ADDON_LOADED")
+end
+
+function EngravedFrame:PLAYER_ENTERING_WORLD()
+	Engraved:SetupClass()
+	Engraved:ApplyOptions()
+	Engraved:Update()
+end
+			
+function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
+	Engraved:SetupClass()
+	Engraved:ApplyOptions()
+	Engraved:Update()
+end
+			
+function EngravedFrame:PLAYER_TALENT_UPDATE()
+	Engraved:ApplyOptions()
+	Engraved:Update()
+end
+			
+function EngravedFrame:CHARACTER_POINTS_CHANGED()
+	Engraved:ApplyOptions()
+	Engraved:Update()
+end
+			
+function EngravedFrame:PLAYER_LEVEL_UP()
+	Engraved:SetupClass()
+	Engraved:ApplyOptions()
+	Engraved:Update()
 end
 
 do
@@ -67,6 +100,8 @@ function Engraved:OnAddonLoaded()
 		reset = true
 	end
 	Engraved:UpdateOptions("EngravedOptions", Engraved.Defaults, reset)
+
+	RuneFrame:OnLoad()
 end
 
 function Engraved:ApplyOptions()

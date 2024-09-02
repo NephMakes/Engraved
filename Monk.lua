@@ -1,7 +1,6 @@
 local _, Engraved = ...
-Engraved.Monk = {};
-local Monk = Engraved.Monk;
-local RuneFrame  = EngravedRuneFrame;
+local Monk = Engraved.Monk
+local RuneFrame  = EngravedRuneFrame
 
 function Engraved.Monk:Setup()
 	RuneFrame.inUse = true;

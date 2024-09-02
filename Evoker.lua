@@ -1,5 +1,4 @@
 local _, Engraved = ...
-Engraved.Evoker = {}
 local Evoker = Engraved.Evoker
 local RuneFrame = EngravedRuneFrame
 

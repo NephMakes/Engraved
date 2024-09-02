@@ -2,7 +2,6 @@
 -- on Curse, and on WoWInterface.  Thanks!   -- Neph
 
 local _, Engraved = ...
-Engraved.Localization = {};
 local Localization = Engraved.Localization;
 
 Localization["enUS"] = {

@@ -1,9 +1,8 @@
 -- RuneFrame and Rune functions
 
 local addonName, Engraved = ...
-Engraved.Rune = {}
-local Rune = Engraved.Rune
 local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
+local Rune = Engraved.Rune
 
 local function round(x) 
 	return floor(x + 0.5)
@@ -435,9 +434,3 @@ function Rune:OnResizeStop()
 	runeFrame:SetRunePositions(EngravedOptions.RunePositions)
 end
 
-
---[[ ]]--
-
-do
-	RuneFrame:OnLoad()
-end

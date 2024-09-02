@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: Engraved
 ## Version: 2.4.0
-## Notes: Track class resources with Warcraft rune art
+## Notes: Track class resources using Warcraft rune art
 ## Author: NephMakes
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: EngravedOptions

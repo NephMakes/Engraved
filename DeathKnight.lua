@@ -1,5 +1,4 @@
 local _, Engraved = ...
-Engraved.DeathKnight = {}
 local DeathKnight = Engraved.DeathKnight
 local RuneFrame = EngravedRuneFrame
 
