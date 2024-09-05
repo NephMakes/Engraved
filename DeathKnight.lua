@@ -89,6 +89,7 @@ function DeathKnight:UpdateRunes()
 end
 
 function DeathKnight:UpdateRunesClassic()
+	-- Runes can change type in Wrath, Cataclysm
 	-- self is RuneFrame
 	for runeIndex = 1, 6 do
 		self:UpdateRuneType(runeIndex)
@@ -97,7 +98,7 @@ function DeathKnight:UpdateRunesClassic()
 end
 
 function DeathKnight:UpdateRune(runeIndex)
-	-- For retail WoW
+	-- Rune charge behavior in Retail, Cataclysm
 	-- self is RuneFrame
 	local rune = self.Runes[runeIndex]
 	local start, duration, runeReady = GetRuneCooldown(runeIndex)
@@ -118,6 +119,7 @@ function DeathKnight:UpdateRune(runeIndex)
 end
 
 function DeathKnight:UpdateRuneClassic(runeIndex)
+	-- Rune charge behavior in Wrath
 	-- self is RuneFrame
 	local rune = self.Runes[runeIndex]
 	local start, duration, runeReady = GetRuneCooldown(runeIndex)

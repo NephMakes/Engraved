@@ -1,7 +1,8 @@
 -- RuneFrame handles class resource mechanics
 
 local addonName, Engraved = ...
-local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
+-- local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
+local RuneFrame = Engraved.RuneFrame
 local Rune = Engraved.Rune
 
 local function round(x) 
@@ -13,21 +14,31 @@ end
 
 function RuneFrame:OnLoad()
 	self:SetScript("OnEvent", self.OnEvent)
-	self:SetScript("OnDragStart", self.OnDragStart)
-	self:SetScript("OnDragStop", self.OnDragStop)
-	self:RegisterForDrag("LeftButton")
-
-	local tab = self.Tab
-	tab:SetScript("OnClick", self.Tab_OnClick)
-	tab:SetScript("OnDragStart", function() RuneFrame:OnDragStart() end)
-	tab:SetScript("OnDragStop", function() RuneFrame:OnDragStop() end)
-	tab:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	tab:RegisterForDrag("LeftButton")
+	self:RegisterEvents()
 
 	for _, rune in pairs(self.Runes) do
 		Mixin(rune, Rune)
 		rune:OnLoad()
 	end
+
+	self:SetScript("OnDragStart", self.OnDragStart)
+	self:SetScript("OnDragStop", self.OnDragStop)
+	self:RegisterForDrag("LeftButton")
+	self:OnLoadTab()
+end
+
+function RuneFrame:RegisterEvents()
+	self:RegisterEvent("PLAYER_REGEN_DISABLED")
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
+	self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+	self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+	self:RegisterEvent("PET_BATTLE_OPENING_START")
+	self:RegisterEvent("PET_BATTLE_OVER")
+end
+
+function RuneFrame:Update()
+	self:SetOptions(EngravedOptions)  -- Saved variable
+	self:UpdateRunes()
 end
 
 function RuneFrame:SetOptions(options)
@@ -123,21 +134,17 @@ function RuneFrame:SetLocked(isLocked)
 	self:UpdateShown()
 end
 
--- function RuneFrame:Lock() end
-
--- function RuneFrame:Unlock() end
-
 
 --[[ Action ]]--
 
-function RuneFrame:Update()
+function RuneFrame:UpdateRunes()
 	self:UpdateMaxPower()
 	self:UpdatePower()
 	self:UpdateShown()
 end
 
-function RuneFrame:UpdatePower() end
 function RuneFrame:UpdateMaxPower() end
+function RuneFrame:UpdatePower() end
 -- These get replaced by class Setup() methods
 
 function RuneFrame:UpdateShown()
@@ -166,42 +173,81 @@ function RuneFrame:SetOutOfCombat()
 end
 
 function RuneFrame:OnEvent(event, ...)
-	if event == "UNIT_POWER_FREQUENT" then
-		local unit, powerToken = ...
-		if (unit == "player") and (self.powerToken == powerToken) then
-			self:UpdatePower()
-		end
-	elseif event == "UNIT_MAXPOWER" then
-		local unit, powerToken = ...
-		if (unit == "player") and (self.powerToken == powerToken) then
-			self:UpdateMaxPower()
-		end
-	elseif event == "RUNE_POWER_UPDATE" then
-		-- For death knights
-		local runeIndex, usable = ...
-		self:UpdateRune(runeIndex)
-	elseif event == "RUNE_TYPE_UPDATE" then
-		-- For death knights in classic, otherwise event not registered
-		local runeIndex = ...
-		if runeIndex then
-			self:UpdateRuneType(runeIndex)
-		end
-	elseif (event == "PLAYER_REGEN_DISABLED") and self.inUse then
-		self:SetShown()
-	elseif (event == "PLAYER_REGEN_ENABLED") and self.inUse then
-		self:SetOutOfCombat()
-	elseif event == "PLAYER_TARGET_CHANGED" or event == "UNIT_AURA" then
-		-- Classic/Wrath/Cata Rogue & Druid, Retail Frost Mage
+	local f = self[event]
+	if f then
+		f(self, ...)
+	end
+end
+
+function RuneFrame:UNIT_POWER_FREQUENT(unit, powerToken)
+	if (unit == "player") and (powerToken == self.powerToken) then
 		self:UpdatePower()
-	elseif event == "UNIT_DISPLAYPOWER" then
-		local unit = ...
-		if unit == "player" then
-			Engraved.Druid:OnShapeshift()
-			self:UpdateShown()
-		end
-	elseif (event == "UNIT_ENTERED_VEHICLE") or (event == "PET_BATTLE_OPENING_START") then
-		self:Hide()
-	elseif (event == "UNIT_EXITED_VEHICLE") or (event == "PET_BATTLE_OVER") then
+	end
+end
+
+function RuneFrame:UNIT_MAXPOWER(unit, powerToken)
+	if (unit == "player") and (powerToken == self.powerToken) then
+		self:UpdateMaxPower()
+	end
+end
+
+function RuneFrame:PLAYER_REGEN_ENABLED()
+	if self.inUse then
+		self:SetOutOfCombat()
+	end
+end
+
+function RuneFrame:PLAYER_REGEN_DISABLED()
+	if self.inUse then
+		self:SetShown()
+	end
+end
+
+function RuneFrame:RUNE_POWER_UPDATE(runeIndex, isUsable)
+	-- For Death Knight
+	self:UpdateRune(runeIndex)
+end
+
+function RuneFrame:RUNE_TYPE_UPDATE(runeIndex)
+	-- For Classic Death Knight
+	if runeIndex then  -- Why do we need a check?
+		self:UpdateRuneType(runeIndex)
+	end
+end
+
+function RuneFrame:PLAYER_TARGET_CHANGED()
+	-- For Classic Rogue & Druid
+	self:UpdatePower()
+end
+
+function RuneFrame:UNIT_DISPLAYPOWER(unit)
+	if unit == "player" then
+		Engraved.Druid:OnShapeshift()
+		self:UpdateShown()
+	end
+end
+
+function RuneFrame:UNIT_AURA()
+	-- For Retail Frost Mage
+	self:UpdatePower()
+end
+
+function RuneFrame:UNIT_ENTERED_VEHICLE()
+	self:Hide()
+end
+
+function RuneFrame:UNIT_EXITED_VEHICLE()
+	if self.inUse then
+		self:UpdateShown()
+	end
+end
+
+function RuneFrame:PET_BATTLE_OPENING_START()
+	self:Hide()
+end
+
+function RuneFrame:PET_BATTLE_OVER()
+	if self.inUse then
 		self:UpdateShown()
 	end
 end
@@ -269,9 +315,19 @@ function RuneFrame:UpdateSizeAndPosition()
 	self:SetRunePositions(EngravedOptions.RunePositions)
 end
 
-function RuneFrame:Tab_OnClick(button)
+function RuneFrame:OnLoadTab()
+	local tab = self.Tab
+	tab:SetScript("OnClick", self.OnClickTab)
+	tab:SetScript("OnDragStart", function() RuneFrame:OnDragStart() end)
+	tab:SetScript("OnDragStop", function() RuneFrame:OnDragStop() end)
+	tab:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	tab:RegisterForDrag("LeftButton")
+	UIDropDownMenu_Initialize(EngravedRuneFrameTabDropDown, RuneFrame.InitializeTabDropDown, "MENU")
+end
+
+function RuneFrame:OnClickTab(mouseButton)
 	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
-	if button == "RightButton" then
+	if mouseButton == "RightButton" then
 		ToggleDropDownMenu(1, nil, EngravedRuneFrameTabDropDown, self:GetName(), 0, 0)
 		return
 	end

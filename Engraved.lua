@@ -1,4 +1,4 @@
--- Engraved: Track class combat resources using Warcraft rune art
+-- Engraved: Track class combat resources with Warcraft rune art
 -- by NephMakes
 
 local ENGRAVED, Engraved = ...
@@ -18,7 +18,22 @@ Engraved.Monk = {}
 Engraved.Evoker = {}
 
 local EngravedFrame = Engraved.EngravedFrame
-local RuneFrame = EngravedRuneFrame
+local RuneFrame = Engraved.RuneFrame
+
+function Engraved:Update()
+	-- TODO: Update OptionsPanel, etc here
+	RuneFrame:Update()
+end
+
+function Engraved:ToggleLockUnlock() 
+	-- Called by Engraved.SlashCommand()
+	local isLocked = EngravedOptions.IsLocked
+	if isLocked then
+		RuneFrame:SetLocked(false)
+	else
+		RuneFrame:SetLocked(true)
+	end
+end
 
 
 --[[ EngravedFrame ]]--
@@ -27,16 +42,17 @@ local RuneFrame = EngravedRuneFrame
 
 function EngravedFrame:OnLoad()
 	self:SetScript("OnEvent", EngravedFrame.OnEvent)
+
 	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
+
 	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-		-- Classic Era
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	else
+		self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 		self:RegisterEvent("PLAYER_TALENT_UPDATE")
 	end
-	-- SetUpClass_Retail.lua registers PLAYER_SPECIALIZATION_CHANGED
 end
 
 function EngravedFrame:OnEvent(event, ...)
@@ -48,49 +64,13 @@ end
 
 function EngravedFrame:ADDON_LOADED(addonName)
 	if addonName ~= ENGRAVED then return end
-	Engraved:OnAddonLoaded()
+	self:OnAddonLoaded()
 	self:UnregisterEvent("ADDON_LOADED")
 end
 
-function EngravedFrame:PLAYER_ENTERING_WORLD()
-	Engraved:SetupClass()
-	Engraved:SetOptions()
-	Engraved:Update()
-end
-			
-function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
-	Engraved:SetupClass()
-	Engraved:SetOptions()
-	Engraved:Update()
-end
-			
-function EngravedFrame:PLAYER_TALENT_UPDATE()
-	Engraved:SetOptions()
-	Engraved:Update()
-end
-			
-function EngravedFrame:CHARACTER_POINTS_CHANGED()
-	Engraved:SetOptions()
-	Engraved:Update()
-end
-			
-function EngravedFrame:PLAYER_LEVEL_UP()
-	Engraved:SetupClass()
-	Engraved:SetOptions()
-	Engraved:Update()
-end
-
-do
-	EngravedFrame:OnLoad()
-end
-
-
---[[ General Engraved functions ]]--
-
-function Engraved:OnAddonLoaded()
+function EngravedFrame:OnAddonLoaded()
 	Engraved:LocalizeStrings()
 	Engraved:AddSlashCommand()
-	UIDropDownMenu_Initialize(EngravedRuneFrameTabDropDown, RuneFrame.InitializeTabDropDown, "MENU")
 
 	local _, class = UnitClass("player")
 	Engraved:SetClassDefaults(class)
@@ -104,20 +84,31 @@ function Engraved:OnAddonLoaded()
 	RuneFrame:OnLoad()
 end
 
-function Engraved:SetOptions()
-	RuneFrame:SetOptions(EngravedOptions)
+function EngravedFrame:PLAYER_ENTERING_WORLD()
+	Engraved:SetupClass()
+	Engraved:Update()
+end
+			
+function EngravedFrame:PLAYER_LEVEL_UP()
+	Engraved:SetupClass()
+	Engraved:Update()
 end
 
-function Engraved:Update()
-	RuneFrame:Update()
+function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
+	Engraved:SetupClass()
+	Engraved:Update()
 end
-
-function Engraved:ToggleLockUnlock() 
-	local isLocked = EngravedOptions.IsLocked
-	if isLocked then
-		RuneFrame:SetLocked(false)
-	else
-		RuneFrame:SetLocked(true)
-	end
+			
+function EngravedFrame:PLAYER_TALENT_UPDATE()
+	-- Some talents increase MaxPower
+	Engraved:Update()
+end
+			
+function EngravedFrame:CHARACTER_POINTS_CHANGED()
+	Engraved:Update()
+end
+			
+do
+	EngravedFrame:OnLoad()
 end
 

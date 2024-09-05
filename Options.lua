@@ -1,6 +1,7 @@
 -- OptionsLibrary.lua must be loaded before this file
 
 local addonName, Engraved = ...
+local RuneFrame = Engraved.RuneFrame
 local DeathKnight = Engraved.DeathKnight
 
 --[[ Defaults ]]-- 
@@ -30,7 +31,7 @@ Engraved.Defaults = {
 	RuneSizes = { 80, 80, 80, 80, 80, 80, 80, 80 },
 	RuneTheme = "ICECROWN", 
 	Version = C_AddOns.GetAddOnMetadata(addonName, "Version")
-};
+}
 
 function Engraved:SetClassDefaults(class)
 	local defaults = Engraved.Defaults;

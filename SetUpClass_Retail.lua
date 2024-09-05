@@ -7,16 +7,7 @@ local RuneFrame = EngravedRuneFrame
 
 local GetSpecialization = GetSpecialization or GetPrimaryTalentTree
 
-EngravedFrame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
-
 function Engraved:SetupClass()
-	RuneFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-	RuneFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-	RuneFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-	RuneFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-	RuneFrame:RegisterEvent("PET_BATTLE_OPENING_START")
-	RuneFrame:RegisterEvent("PET_BATTLE_OVER")
-
 	local _, class = UnitClass("player")
 	local spec = GetSpecialization()
 	if class == "DEATHKNIGHT" then
