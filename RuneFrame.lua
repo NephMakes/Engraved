@@ -1,7 +1,6 @@
 -- RuneFrame handles class resource mechanics
 
 local addonName, Engraved = ...
--- local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
 local RuneFrame = Engraved.RuneFrame
 local Rune = Engraved.Rune
 
@@ -40,7 +39,7 @@ function RuneFrame:Update()
 	self:SetClass()
 	if self.inUse then
 		self:SetOptions(EngravedOptions)  -- Saved variable
-		self:UpdateAction()
+		self:UpdateRunes()
 	else
 		self:Inactivate()
 	end
@@ -159,7 +158,7 @@ end
 
 --[[ Action ]]--
 
-function RuneFrame:UpdateAction()
+function RuneFrame:UpdateRunes()
 	self:UpdateMaxPower()
 	self:UpdatePower()
 	self:UpdateShown()

@@ -63,7 +63,7 @@ end
 
 function RuneFrameMixin:UNIT_DISPLAYPOWER(unit)
 	self:SetForm()
-	self:UpdateAction()
+	self:UpdateRunes()
 end
 
 function RuneFrameMixin:PLAYER_TARGET_CHANGED()

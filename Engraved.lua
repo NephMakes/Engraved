@@ -20,6 +20,7 @@ Engraved.Evoker = {}
 local EngravedFrame = Engraved.EngravedFrame
 local RuneFrame = Engraved.RuneFrame
 
+
 function Engraved:Update()
 	-- TODO: Update OptionsPanel, etc here
 	RuneFrame:Update()
@@ -85,22 +86,18 @@ function EngravedFrame:OnAddonLoaded()
 end
 
 function EngravedFrame:PLAYER_ENTERING_WORLD()
-	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_LEVEL_UP()
-	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 
 function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
-	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_TALENT_UPDATE()
-	-- Some talents increase MaxPower
 	Engraved:Update()
 end
 			

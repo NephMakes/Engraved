@@ -3,7 +3,7 @@
 
 local _, Engraved = ...
 local Evoker = Engraved.Evoker
-local RuneFrame = EngravedRuneFrame
+local RuneFrame = Engraved.RuneFrame
 
 local POWER_TYPE_ESSENCE = Enum.PowerType.Essence
 

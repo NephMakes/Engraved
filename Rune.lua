@@ -1,7 +1,7 @@
 -- Individual runes
 
 local addonName, Engraved = ...
-local RuneFrame = EngravedRuneFrame  -- Defined in Engraved.xml
+local RuneFrame = Engraved.RuneFrame
 local Rune = Engraved.Rune
 
 local function round(x) 
