@@ -8,11 +8,11 @@
 
 Engraved.xml
 Engraved.lua
-SetUpClass_Wrath.lua
 RuneFrame.lua
 Rune.lua
 DeathKnight.lua
-RogueDruid.lua
+Rogue.lua
+Druid.lua
 OptionsLibrary.lua
 Options.lua
 SlashCommand.lua

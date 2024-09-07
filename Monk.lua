@@ -1,46 +1,64 @@
+-- Monk chi
+-- File not loaded if Classic
+
 local _, Engraved = ...
 local Monk = Engraved.Monk
-local RuneFrame  = EngravedRuneFrame
+local RuneFrame = Engraved.RuneFrame
 
-function Engraved.Monk:Setup()
-	RuneFrame.inUse = true;
-	RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player");
-	RuneFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player");
-	RuneFrame.powerToken = "CHI";
-	RuneFrame.UpdatePower = Monk.UpdateChi;
-	RuneFrame.UpdateMaxPower = Monk.UpdateMaxChi;
+local POWER_TYPE_CHI = Enum.PowerType.Chi
+local SPEC_ID_WINDWALKER = 3
+
+
+--[[ RuneFrame ]]--
+
+function RuneFrame:MONK()
+	local specID = GetSpecialization()
+	if specID == SPEC_ID_WINDWALKER then
+		self.inUse = true
+		Mixin(self, Monk.RuneFrameMixin)
+		self:SetMonk()
+	else
+		self.inUse = false
+	end
 end
 
-function Monk:UpdateChi()
-	local chi = UnitPower("player", Enum.PowerType.Chi);
-	for i = 1, chi do
-		if ( not self.Runes[i].on ) then
-			self.Runes[i]:TurnOn();
+Monk.RuneFrameMixin = {}
+local RuneFrameMixin = Monk.RuneFrameMixin
+
+function RuneFrameMixin:SetMonk()
+	-- self:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+	self:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+	self.powerToken = "CHI"
+end
+
+function RuneFrameMixin:UpdateMaxPower()
+	local maxPower = UnitPowerMax("player", POWER_TYPE_CHI)
+	for i, rune in ipairs(self.Runes) do
+		if i <= maxPower then
+			rune.inUse = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
 		end
 	end
-	for i = chi + 1, #self.Runes do
-		if ( self.Runes[i].inUse ) then
-			if ( self.Runes[i].on ) then
-				self.Runes[i]:TurnOff();
-			elseif ( self.Runes[i].on == nil ) then
-				self.Runes[i].fill:SetAlpha(0);
-				self.Runes[i].glow:SetAlpha(0);
-				self.Runes[i].on = false;
+	self:UpdateSizeAndPosition()
+end
+
+function RuneFrameMixin:UpdatePower()
+	local power = UnitPower("player", POWER_TYPE_CHI)
+	for i, rune in ipairs(self.Runes) do
+		if i <= power then
+			if not rune.on then
+				rune:TurnOn()
+			end
+		elseif rune.inUse then
+			if rune.on then
+				rune:TurnOff()
+			elseif rune.on == nil then
+				rune:SetOff()
 			end
 		end
 	end
-end
-
-function Monk:UpdateMaxChi()
-	local maxChi = UnitPowerMax("player", Enum.PowerType.Chi);
-	for i = 1, maxChi do
-		self.Runes[i]:Show();
-		self.Runes[i].inUse = true;
-	end
-	for i = maxChi + 1, #RuneFrame.Runes do
-		self.Runes[i]:Hide();
-		self.Runes[i].inUse = false;
-	end
-	self:UpdateSizeAndPosition();
 end
 

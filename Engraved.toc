@@ -9,14 +9,14 @@
 
 Engraved.xml
 Engraved.lua
-SetUpClass_Retail.lua
 RuneFrame.lua
 Rune.lua
 DeathKnight.lua
-RogueDruid.lua
-Mage.lua
-Warlock.lua
+Rogue.lua
+Druid.lua
 Paladin.lua
+Warlock.lua
+Mage.lua
 Monk.lua
 Evoker.lua
 OptionsLibrary.lua

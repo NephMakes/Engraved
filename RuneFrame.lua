@@ -37,8 +37,29 @@ function RuneFrame:RegisterEvents()
 end
 
 function RuneFrame:Update()
-	self:SetOptions(EngravedOptions)  -- Saved variable
-	self:UpdateRunes()
+	self:SetClass()
+	if self.inUse then
+		self:SetOptions(EngravedOptions)  -- Saved variable
+		self:UpdateAction()
+	else
+		self:Inactivate()
+	end
+end
+
+function RuneFrame:SetClass()
+	-- RuneFrame:CLASS defined in [Class].lua
+	-- Loaded in .toc according to game version
+	local _, class = UnitClass("player")
+	local classFunction = self[class]
+	if classFunction then
+		classFunction(self)
+	end
+end
+
+function RuneFrame:Inactivate()
+	-- Render harmless if loaded for inappropriate class/spec
+	self:UnregisterAllEvents()
+	self:Hide()
 end
 
 function RuneFrame:SetOptions(options)
@@ -74,6 +95,7 @@ function RuneFrame:SetRuneTheme(theme)
 end
 
 function RuneFrame:SetRuneColor(color)
+	-- This gets replaced for Classic Death Knights
 	for _, rune in pairs(self.Runes) do
 		rune:SetRuneColor(color)
 	end
@@ -137,7 +159,7 @@ end
 
 --[[ Action ]]--
 
-function RuneFrame:UpdateRunes()
+function RuneFrame:UpdateAction()
 	self:UpdateMaxPower()
 	self:UpdatePower()
 	self:UpdateShown()
@@ -145,10 +167,10 @@ end
 
 function RuneFrame:UpdateMaxPower() end
 function RuneFrame:UpdatePower() end
--- These get replaced by class Setup() methods
+-- These get replaced by class RuneFrameMixin
 
 function RuneFrame:UpdateShown()
-	if not self.inUse then
+	if not self.inUse or self.isDormant then
 		self:Hide()
 	else
 		self:Show()
@@ -179,57 +201,30 @@ function RuneFrame:OnEvent(event, ...)
 	end
 end
 
+--[[
+-- Shouldn't ever affect these resources
+-- Update on talent/spec change should be enough
+function RuneFrame:UNIT_MAXPOWER(unit, powerToken)
+	-- Only registered for unit "player"
+	if powerToken == self.powerToken then
+		self:UpdateMaxPower()
+	end
+end
+]]--
+
 function RuneFrame:UNIT_POWER_FREQUENT(unit, powerToken)
-	if (unit == "player") and (powerToken == self.powerToken) then
+	-- Only registered for unit "player"
+	if powerToken == self.powerToken then
 		self:UpdatePower()
 	end
 end
 
-function RuneFrame:UNIT_MAXPOWER(unit, powerToken)
-	if (unit == "player") and (powerToken == self.powerToken) then
-		self:UpdateMaxPower()
-	end
-end
-
 function RuneFrame:PLAYER_REGEN_ENABLED()
-	if self.inUse then
-		self:SetOutOfCombat()
-	end
+	self:SetOutOfCombat()
 end
 
 function RuneFrame:PLAYER_REGEN_DISABLED()
-	if self.inUse then
-		self:SetShown()
-	end
-end
-
-function RuneFrame:RUNE_POWER_UPDATE(runeIndex, isUsable)
-	-- For Death Knight
-	self:UpdateRune(runeIndex)
-end
-
-function RuneFrame:RUNE_TYPE_UPDATE(runeIndex)
-	-- For Classic Death Knight
-	if runeIndex then  -- Why do we need a check?
-		self:UpdateRuneType(runeIndex)
-	end
-end
-
-function RuneFrame:PLAYER_TARGET_CHANGED()
-	-- For Classic Rogue & Druid
-	self:UpdatePower()
-end
-
-function RuneFrame:UNIT_DISPLAYPOWER(unit)
-	if unit == "player" then
-		Engraved.Druid:OnShapeshift()
-		self:UpdateShown()
-	end
-end
-
-function RuneFrame:UNIT_AURA()
-	-- For Retail Frost Mage
-	self:UpdatePower()
+	self:SetShown()
 end
 
 function RuneFrame:UNIT_ENTERED_VEHICLE()
@@ -237,9 +232,7 @@ function RuneFrame:UNIT_ENTERED_VEHICLE()
 end
 
 function RuneFrame:UNIT_EXITED_VEHICLE()
-	if self.inUse then
-		self:UpdateShown()
-	end
+	self:UpdateShown()
 end
 
 function RuneFrame:PET_BATTLE_OPENING_START()
@@ -247,9 +240,7 @@ function RuneFrame:PET_BATTLE_OPENING_START()
 end
 
 function RuneFrame:PET_BATTLE_OVER()
-	if self.inUse then
-		self:UpdateShown()
-	end
+	self:UpdateShown()
 end
 
 

@@ -1,7 +1,9 @@
+-- Rogue and Druid combo points
+
 local _, Engraved = ...
 local Rogue = Engraved.Rogue
 local Druid = Engraved.Druid
-local RuneFrame = EngravedRuneFrame
+local RuneFrame = Engraved.RuneFrame
 
 local POWER_TYPE_COMBO = Enum.PowerType.ComboPoints
 local POWER_TYPE_ENERGY = Enum.PowerType.Energy
@@ -9,6 +11,9 @@ local POWER_TYPE_ENERGY = Enum.PowerType.Energy
 
 --[[ Rogue ]]--
 
+function RuneFrame:ROGUE()
+	self.inUse = true
+end
 
 function Rogue:Setup()
 	RuneFrame.inUse = true
@@ -64,6 +69,9 @@ end
 
 --[[ Druid ]]--
 
+function RuneFrame:DRUID()
+	self.inUse = true
+end
 
 function Druid:Setup()
 	RuneFrame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player")

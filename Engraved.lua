@@ -85,17 +85,17 @@ function EngravedFrame:OnAddonLoaded()
 end
 
 function EngravedFrame:PLAYER_ENTERING_WORLD()
-	Engraved:SetupClass()
+	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 			
 function EngravedFrame:PLAYER_LEVEL_UP()
-	Engraved:SetupClass()
+	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 
 function EngravedFrame:PLAYER_SPECIALIZATION_CHANGED()
-	Engraved:SetupClass()
+	-- Engraved:SetupClass()
 	Engraved:Update()
 end
 			

@@ -1,105 +1,94 @@
+-- Death Knight runes
+-- File not loaded if Classic Era
+
 local _, Engraved = ...
 local DeathKnight = Engraved.DeathKnight
-local RuneFrame = EngravedRuneFrame
+local RuneFrame = Engraved.RuneFrame
 
 local GetTime = GetTime
 
-function DeathKnight:Setup()
-	RuneFrame.inUse = true
-	RuneFrame:RegisterEvent("RUNE_POWER_UPDATE")
-	RuneFrame.powerToken = "RUNES"
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunes
-	RuneFrame.UpdateRune = DeathKnight.UpdateRune
-	RuneFrame.UpdateRuneType = DeathKnight.UpdateRuneType
-	for i = 1, 6 do
-		local rune = RuneFrame.Runes[i]
-		rune:Show()
-		rune.on = true
-		rune.inUse = true
-	end
-	for i = 7, #RuneFrame.Runes do
-		RuneFrame.Runes[i]:Hide()
-		RuneFrame.Runes[i].inUse = false
-	end
+local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
+local IS_WRATH = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
+
+
+--[[ RuneFrame ]]--
+
+function RuneFrame:DEATHKNIGHT()
+	-- Called by RuneFrame:SetClass
+	self.inUse = true
+	Mixin(self, DeathKnight.RuneFrameMixin)
+	self:SetDeathKnight()
 end
 
-function DeathKnight:SetupCataclysm()
-	-- Cataclysm version
-	-- Called after DeathKnight:Setup()
-	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic
-	RuneFrame.UpdateRune = DeathKnight.UpdateRune
-	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
-	local options = EngravedOptions
-	RuneFrame.runeColor = {}
-	RuneFrame.runeColor[1] = options.RuneColorBlood
-	RuneFrame.runeColor[2] = options.RuneColorFrost
-	RuneFrame.runeColor[3] = options.RuneColorUnholy
-	RuneFrame.runeColor[4] = options.RuneColorDeath
-end
+DeathKnight.RuneFrameMixin = {}
+local RuneFrameMixin = DeathKnight.RuneFrameMixin
 
-function DeathKnight:SetupClassic()
-	-- Wrath version
-	-- Called after DeathKnight:Setup()
-	RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE")
-	RuneFrame.UpdatePower = DeathKnight.UpdateRunesClassic
-	RuneFrame.UpdateRune = DeathKnight.UpdateRuneClassic
-	RuneFrame.SetRuneColor = DeathKnight.SetRuneColorClassic
-	local options = EngravedOptions
-	RuneFrame.runeColor = {}
-	RuneFrame.runeColor[1] = options.RuneColorBlood
-	RuneFrame.runeColor[2] = options.RuneColorFrost
-	RuneFrame.runeColor[3] = options.RuneColorUnholy
-	RuneFrame.runeColor[4] = options.RuneColorDeath
-end
-
-function DeathKnight:ShowClassicRuneColorOptions()
-	local optionsPanel = Engraved.OptionsPanel
-	optionsPanel.runeColor:Hide()
-	optionsPanel.runeColorBlood:Show()
-	optionsPanel.runeColorFrost:Show()
-	optionsPanel.runeColorUnholy:Show()
-	optionsPanel.runeColorDeath:Show()
-end
-
-function DeathKnight:SetRuneTypeColor(runeType, runeColor)
-	-- Called by optionsPanel.runeColorXXXX
-	RuneFrame.runeColor[runeType] = runeColor
-	RuneFrame:SetRuneColorClassic()
-end
-
-function DeathKnight:SetRuneColorClassic(runeColorRetail)
-	-- self is RuneFrame
-	-- Called by Engraved:ApplyOptions() when entering world or talents changed
-	-- Called by DeathKnight:SetRuneTypeColor() when user changes rune color
-	for runeIndex, _ in ipairs(self.Runes) do
-		self:UpdateRuneType(runeIndex)
-	end	
-end
-
-
---[[ Combat functions ]]--
-
-function DeathKnight:UpdateRunes()
-	-- For retail WoW
-	-- self is RuneFrame
-	for runeIndex = 1, 6 do
-		self:UpdateRune(runeIndex)
+function RuneFrameMixin:SetDeathKnight()
+	self:RegisterEvent("RUNE_POWER_UPDATE")
+	self.powerToken = "RUNES"
+	if IS_WRATH then
+		self:SetDeathKnightWrath()
+	elseif IS_CATA then
+		self:SetDeathKnightCata()
+	else
+		self:SetDeathKnightRetail()
 	end
 end
 
-function DeathKnight:UpdateRunesClassic()
-	-- Runes can change type in Wrath, Cataclysm
-	-- self is RuneFrame
+function RuneFrameMixin:SetDeathKnightWrath()
+	self.UpdatePower = self.UpdatePowerClassic
+	self.UpdateRune = self.UpdateRuneWrath
+
+	self:RegisterEvent("RUNE_TYPE_UPDATE")
+	self:SetRuneTypeColors()
+	self.SetRuneColor = self.SetRuneColorClassic
+	DeathKnight:ShowClassicRuneColorOptions()  -- Deprecated
+end
+
+function RuneFrameMixin:SetDeathKnightCata()
+	self.UpdatePower = self.UpdatePowerClassic
+	self.UpdateRune = self.UpdateRuneRetail
+
+	self:RegisterEvent("RUNE_TYPE_UPDATE")
+	self:SetRuneTypeColors()
+	self.SetRuneColor = self.SetRuneColorClassic
+	DeathKnight:ShowClassicRuneColorOptions()  -- Deprecated
+end
+
+function RuneFrameMixin:SetDeathKnightRetail()
+	self.UpdatePower = self.UpdatePowerRetail
+	self.UpdateRune = self.UpdateRuneRetail
+end
+
+function RuneFrameMixin:UpdateMaxPower()
+	for i, rune in ipairs(self.Runes) do
+		if i < 7 then
+			rune.inUse = true
+			-- rune.on = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
+		end
+	end
+end
+
+function RuneFrameMixin:UpdatePowerClassic()
 	for runeIndex = 1, 6 do
 		self:UpdateRuneType(runeIndex)
 		self:UpdateRune(runeIndex)
 	end
 end
 
-function DeathKnight:UpdateRune(runeIndex)
-	-- Rune charge behavior in Retail, Cataclysm
-	-- self is RuneFrame
+function RuneFrameMixin:UpdatePowerRetail()
+	for runeIndex = 1, 6 do
+		self:UpdateRune(runeIndex)
+	end
+end
+
+function RuneFrameMixin:UpdateRuneWrath(runeIndex)
+	-- Rune cooldowns are independent of each other
+	-- Called as self:UpdateRune
 	local rune = self.Runes[runeIndex]
 	local start, duration, runeReady = GetRuneCooldown(runeIndex)
 	if runeReady and not rune.on then
@@ -108,36 +97,15 @@ function DeathKnight:UpdateRune(runeIndex)
 	elseif not runeReady then
 		if rune.on then
 			rune:TurnOff()
-		end
-		if start then
-			-- Runes can wait to start cooling down
-			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
-			rune.animChargeUp.charge:SetDuration(duration)
-			rune:ChargeUp()
-		end
-	end
-end
-
-function DeathKnight:UpdateRuneClassic(runeIndex)
-	-- Rune charge behavior in Wrath
-	-- self is RuneFrame
-	local rune = self.Runes[runeIndex]
-	local start, duration, runeReady = GetRuneCooldown(runeIndex)
-	if runeReady and not rune.on then
-		rune:TurnOn()
-		rune:ChargeDown()
-	elseif not runeReady then
-		if rune.on then
-			rune:TurnOff()
+		elseif rune.on == nil
+			rune:SetOff()
 		end
 		-- slowGlow
-		--[[
-		if start then
-			rune.animChargeUp.hold:SetDuration(0)
-			rune.animChargeUp.charge:SetDuration(start + duration - GetTime())
-			rune:ChargeUp()
-		end
-		]]--
+--		if start then
+--			rune.animChargeUp.hold:SetDuration(0)
+--			rune.animChargeUp.charge:SetDuration(start + duration - GetTime())
+--			rune:ChargeUp()
+--		end
 		-- almostReady
 		if start then
 			local timeLeft = start + duration - GetTime()
@@ -148,8 +116,44 @@ function DeathKnight:UpdateRuneClassic(runeIndex)
 	end
 end
 
-function DeathKnight:UpdateRuneType(runeIndex)
-	-- self is RuneFrame
+function RuneFrameMixin:UpdateRuneRetail(runeIndex)
+	-- Runes can wait to start cooling down until others finish
+	-- Called as self:UpdateRune
+	local rune = self.Runes[runeIndex]
+	local start, duration, runeReady = GetRuneCooldown(runeIndex)
+	if runeReady and not rune.on then
+		rune:TurnOn()
+		rune:ChargeDown()
+	elseif not runeReady then
+		if rune.on then
+			rune:TurnOff()
+		elseif rune.on == nil
+			rune:SetOff()
+		end
+		if start then
+			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
+			rune.animChargeUp.charge:SetDuration(duration)
+			rune:ChargeUp()
+		end
+	end
+end
+
+function RuneFrameMixin:SetRuneTypeColors()
+	local options = EngravedOptions
+	self.runeColor = {}
+	self.runeColor[1] = options.RuneColorBlood
+	self.runeColor[2] = options.RuneColorFrost
+	self.runeColor[3] = options.RuneColorUnholy
+	self.runeColor[4] = options.RuneColorDeath
+end
+
+function RuneFrameMixin:SetRuneColorClassic()
+	for runeIndex = 1, 6 do
+		self:UpdateRuneType(runeIndex)
+	end	
+end
+
+function RuneFrameMixin:UpdateRuneType(runeIndex)
 	local runeType = GetRuneType(runeIndex)
 	if runeType then
 		local rune = self.Runes[runeIndex]
@@ -158,5 +162,34 @@ function DeathKnight:UpdateRuneType(runeIndex)
 	end
 end
 
+function RuneFrameMixin:RUNE_POWER_UPDATE(runeIndex, isUsable)
+	self:UpdateRune(runeIndex)
+end
+
+function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
+	if runeIndex then  -- Why do we need a check?
+		self:UpdateRuneType(runeIndex)
+	end
+end
+
+
+--[[ OptionsPanel ]]--
+
+-- Deprecated
+function DeathKnight:ShowClassicRuneColorOptions()
+	local panel = Engraved.OptionsPanel
+	panel.runeColor:Hide()
+	panel.runeColorBlood:Show()
+	panel.runeColorFrost:Show()
+	panel.runeColorUnholy:Show()
+	panel.runeColorDeath:Show()
+end
+
+-- Deprecated
+function DeathKnight:SetRuneTypeColor(runeType, runeColor)
+	-- Called by optionsPanel.runeColorXXXX
+	RuneFrame.runeColor[runeType] = runeColor
+	RuneFrame:SetRuneColorClassic()
+end
 
 

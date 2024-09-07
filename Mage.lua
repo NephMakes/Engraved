@@ -1,119 +1,147 @@
+-- Mage arcane charges, frost icicles
+-- File not loaded if Classic
+
 local _, Engraved = ...
 local Mage = Engraved.Mage
-local RuneFrame  = EngravedRuneFrame
+local RuneFrame  = Engraved.RuneFrame
 
-local SPEC_MAGE_ARCANE, SPEC_MAGE_FIRE, SPEC_MAGE_FROST = 1, 2, 3;
+local SPEC_MAGE_ARCANE, SPEC_MAGE_FIRE, SPEC_MAGE_FROST = 1, 2, 3
 
-function Mage:Setup()
-    local spec = GetSpecialization();
-    if spec == SPEC_MAGE_ARCANE then
-        Mage:ArcaneSetup();
-    elseif spec == SPEC_MAGE_FROST then
-        Mage:FrostSetup();
+local SPEC_ID_ARCANE = 1
+local POWER_TYPE_ARCANE = Enum.PowerType.ArcaneCharges
+
+local SPEC_ID_FROST = 3
+local MAX_ICICLES = 5
+local GetPlayerAuraBySpellID = C_UnitAuras.GetPlayerAuraBySpellID
+
+
+--[[ RuneFrame ]]--
+
+function RuneFrame:MAGE()
+	-- Called by RuneFrame:SetClass
+    local specID = GetSpecialization()
+    if specID == SPEC_ID_ARCANE then
+		self.inUse = true
+		Mixin(self, Mage.ArcaneRuneFrameMixin)
+		self:SetArcane()
+    elseif specID == SPEC_ID_FROST then
+		self.inUse = true
+		Mixin(self, Mage.FrostRuneFrameMixin)
+		self:SetFrost()
+	else
+		self.inUse = false
     end
 end
 
+-- Arcane
 
---[[ Arcane ]] --
+Mage.ArcaneRuneFrameMixin = {}
+local RuneFrameArcane = Mage.ArcaneRuneFrameMixin
 
-function Mage:ArcaneSetup()
-    RuneFrame.inUse = true;
-    RuneFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player");
-    RuneFrame.powerToken = "ARCANE_CHARGES";
-    RuneFrame.UpdatePower = Mage.UpdateArcaneCharges;
-    RuneFrame.UpdateMaxPower = Mage.UpdateArcaneMaxPower;
-    for i = 1, 4 do
-    	RuneFrame.Runes[i]:Show();
-    	RuneFrame.Runes[i].inUse = true;
-    end
-    for i = 5, #RuneFrame.Runes do
-    	RuneFrame.Runes[i]:Hide();
-    	RuneFrame.Runes[i].inUse = false;
-    end
+function RuneFrameArcane:SetArcane()
+    self:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+    self.powerToken = "ARCANE_CHARGES"
 end
 
-function Mage:UpdateArcaneCharges()
-	local charges = UnitPower("player", Enum.PowerType.ArcaneCharges);
-	for i = 1, charges do
-		if ( not self.Runes[i].on ) then
-			self.Runes[i]:TurnOn();
+function RuneFrameArcane:UpdateMaxPower()
+	local maxPower = UnitPowerMax("player", POWER_TYPE_ARCANE)
+	for i, rune in ipairs(self.Runes) do
+		if i <= maxPower then
+			rune.inUse = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
 		end
 	end
-	for i = charges + 1, 4 do
-		if ( self.Runes[i].on ) then
-			self.Runes[i]:TurnOff();
-		elseif ( self.Runes[i].on == nil ) then 
-			self.Runes[i].fill:SetAlpha(0);
-			self.Runes[i].glow:SetAlpha(0);
-			self.Runes[i].on = false;
+	self:UpdateSizeAndPosition()
+end
+
+function RuneFrameArcane:UpdatePower()
+	local power = UnitPower("player", POWER_TYPE_ARCANE)
+	for i, rune in ipairs(self.Runes) do
+		if i <= power then
+			if not rune.on then
+				rune:TurnOn()
+			end
+		elseif rune.inUse then
+			if rune.on then
+				rune:TurnOff()
+			elseif rune.on == nil then
+				rune:SetOff()
+			end
 		end
 	end
 end
 
-function Mage:UpdateArcaneMaxPower()
-	-- self is RuneFrame
-	local charges = UnitPowerMax("player", Enum.PowerType.ArcaneCharges);
-	for i = 1, charges do
-		self.Runes[i]:Show();
-		self.Runes[i].inUse = true;
+-- Frost
+
+Mage.FrostRuneFrameMixin = {}
+local RuneFrameFrost = Mage.FrostRuneFrameMixin
+
+function RuneFrameFrost:SetFrost()
+    self:RegisterUnitEvent("UNIT_AURA", "player")
+end
+
+function RuneFrameFrost:UpdateMaxPower()
+	local maxPower = MAX_ICICLES
+	for i, rune in ipairs(self.Runes) do
+		if i <= maxPower then
+			rune.inUse = true
+			rune:Show()
+		else
+			rune.inUse = false
+			rune:Hide()
+		end
 	end
-	for i = charges + 1, #self.Runes do
-		self.Runes[i]:Hide();
-		self.Runes[i].inUse = false;
+	self:UpdateSizeAndPosition()
+end
+
+function RuneFrameFrost:UpdatePower()
+	local power = self:GetIcicles()
+	for i, rune in ipairs(self.Runes) do
+		if i <= power then
+			if not rune.on then
+				rune:TurnOn()
+			end
+		elseif rune.inUse then
+			if rune.on then
+				rune:TurnOff()
+			elseif rune.on == nil then
+				rune:SetOff()
+			end
+		end
 	end
-	self:UpdateSizeAndPosition();
+end
+
+function RuneFrameFrost:GetIcicles()
+	local aura = GetPlayerAuraBySpellID(205473)  -- "Icicles"
+	if aura then
+		return aura.applications
+	else 
+		return 0
+	end
+end
+
+function RuneFrameFrost:UNIT_AURA(unit, updateInfo)
+	--[[
+	-- Needs testing
+	local shouldUpdate
+	if updateInfo.isFullUpdate then
+		shouldUpdate = true
+	elseif updateInfo.addedAuras then
+		for _, aura in pairs(updateInfo.addedAuras) do
+			if aura.spellId and aura.spellId == 205473 then
+				 -- "Icicles"
+				shouldUpdate = true
+			end
+		end
+	end
+	if shouldUpdate then
+		self:UpdatePower()
+	end
+	]]--
+	self:UpdatePower()
 end
 
 
--- [[ Frost ]] --
-
-function Mage:FrostSetup()
-    RuneFrame.inUse = true;
-    RuneFrame.powerToken = "ICICLES";
-    RuneFrame:RegisterUnitEvent("UNIT_AURA", "player");
-    RuneFrame.UpdatePower = Mage.UpdateFrostIciclesCharges;
-    RuneFrame.UpdateMaxPower = Mage.UpdateFrostMaxPower;
-    for i = 1, 5 do
-    	RuneFrame.Runes[i].inUse = true;
-    	RuneFrame.Runes[i]:Show();
-    end
-    for i = 6, #RuneFrame.Runes do
-    	RuneFrame.Runes[i].inUse = false;
-    	RuneFrame.Runes[i]:Hide();
-    end
-end
-
-local ICICLES_SPELL_ID = 205473;
-
-function Mage:UpdateFrostIciclesCharges()
-	local auraData = C_UnitAuras.GetPlayerAuraBySpellID(ICICLES_SPELL_ID) or {};
-	local charges, maxCharges = auraData.applications or 0, 5;
-    for i = 1, charges do
-    	if ( not self.Runes[i].on ) then
-    		self.Runes[i]:TurnOn();
-    	end
-    end
-    for i = charges + 1, maxCharges do
-    	if ( self.Runes[i].on ) then
-    		self.Runes[i]:TurnOff();
-    	elseif ( self.Runes[i].on == nil ) then
-    		self.Runes[i].fill:SetAlpha(0);
-    		self.Runes[i].glow:SetAlpha(0);
-    		self.Runes[i].on = false;
-    	end
-    end
-end
-
-function Mage:UpdateFrostMaxPower()
-	-- self is RuneFrame
-    local maxCharges = 5
-	for i = 1, maxCharges do
-		self.Runes[i]:Show();
-		self.Runes[i].inUse = true;
-	end
-	for i = maxCharges + 1, #self.Runes do
-		self.Runes[i]:Hide();
-		self.Runes[i].inUse = false;
-	end
-	self:UpdateSizeAndPosition();
-end
