@@ -9,6 +9,12 @@ local GetTime = GetTime
 
 local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 local IS_WRATH = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
+local CHARGE_ALPHA = 0.6  -- Should be animChargeUp.charge.toAlpha
+
+local function round(value, decimalPlaces)
+    local order = 10^(decimalPlaces or 0)
+    return math.floor(value * order + 0.5) / order
+end
 
 
 --[[ RuneFrame ]]--
@@ -97,7 +103,7 @@ function RuneFrameMixin:UpdateRuneWrath(runeIndex)
 	elseif not runeReady then
 		if rune.on then
 			rune:TurnOff()
-		elseif rune.on == nil
+		elseif rune.on == nil then
 			rune:SetOff()
 		end
 		-- slowGlow
@@ -120,19 +126,31 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	-- Runes can wait to start cooling down until others finish
 	-- Called as self:UpdateRune
 	local rune = self.Runes[runeIndex]
-	local start, duration, runeReady = GetRuneCooldown(runeIndex)
-	if runeReady and not rune.on then
+	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
+	if isReady and not rune.on then
 		rune:TurnOn()
 		rune:ChargeDown()
-	elseif not runeReady then
+	elseif not isReady then
 		if rune.on then
 			rune:TurnOff()
-		elseif rune.on == nil
+		elseif rune.on == nil then
 			rune:SetOff()
 		end
-		if start then
-			rune.animChargeUp.hold:SetDuration(max(start - GetTime(), 0))
-			rune.animChargeUp.charge:SetDuration(duration)
+		if startTime then
+			local now = GetTime()
+			local timeLeft = startTime + duration - now
+
+			-- slowGlow
+--			local startDelay = startTime - now  -- Can be negative! 
+--			local chargeProgress = max(0, (now - startTime)/duration)
+--			rune.animChargeUp.hold:SetDuration(max(0, startDelay))
+--			rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
+--			rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
+--			rune:ChargeUp()
+
+			-- almostReady
+			rune.animChargeUp.hold:SetDuration(max(0, timeLeft - 1.5))
+			rune.animChargeUp.charge:SetDuration(0.05)
 			rune:ChargeUp()
 		end
 	end

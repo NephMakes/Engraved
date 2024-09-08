@@ -18,6 +18,9 @@ function Rune:OnLoad()
 	self:SetScript("OnDragStop", self.OnDragStop)
 	self:RegisterForDrag("LeftButton")
 
+	self.chargeFinalAlpha = self.animChargeUp.charge:GetToAlpha()
+		-- For DeathKnight
+
 	local resizeButton = self.resizeButton
 	resizeButton:SetScript("OnEnter", self.ResizeButtonOnEnter)
 	resizeButton:SetScript("OnLeave", self.ResizeButtonOnLeave)
@@ -59,10 +62,10 @@ function Rune:SetOff()
 end
 
 function Rune:ChargeUp()
+	-- For Death Knight cooldowns
 	self.animChargeDown:Stop()
-	if not self.animChargeUp:IsPlaying() then
-		self.animChargeUp:Play()
-	end
+	self.animChargeUp:Stop()
+	self.animChargeUp:Play()
 end
 
 function Rune:ChargeDown()
