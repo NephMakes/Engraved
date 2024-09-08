@@ -149,8 +149,13 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 --			rune:ChargeUp()
 
 			-- almostReady
-			rune.animChargeUp.hold:SetDuration(max(0, timeLeft - 1.5))
-			rune.animChargeUp.charge:SetDuration(0.05)
+			if timeLeft > 1.5 then
+				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+				rune.animChargeUp.charge:SetDuration(0.1)
+			else
+				rune.animChargeUp.hold:SetDuration(0)
+				rune.animChargeUp.charge:SetDuration(0)
+			end
 			rune:ChargeUp()
 		end
 	end
