@@ -21,8 +21,15 @@ local EngravedFrame = Engraved.EngravedFrame
 local RuneFrame = Engraved.RuneFrame
 
 
+function Engraved:SetClass()
+	local _, class = UnitClass("player")
+	self:SetClassDefaults(class)
+	if class == "DEATHKNIGHT" then
+		self.OptionsPanel:ShowDeathKnightOptions()
+	end
+end
+
 function Engraved:Update()
-	-- TODO: Update OptionsPanel, etc here
 	RuneFrame:Update()
 end
 
@@ -72,9 +79,7 @@ end
 function EngravedFrame:OnAddonLoaded()
 	Engraved:LocalizeStrings()
 	Engraved:AddSlashCommand()
-
-	local _, class = UnitClass("player")
-	Engraved:SetClassDefaults(class)
+	Engraved:SetClass()
 
 	local reset = false
 	if EngravedOptions and EngravedOptions.Version and EngravedOptions.Version < "2.0" then 
@@ -86,6 +91,7 @@ function EngravedFrame:OnAddonLoaded()
 end
 
 function EngravedFrame:PLAYER_ENTERING_WORLD()
+	-- Talent information now available
 	Engraved:Update()
 end
 			

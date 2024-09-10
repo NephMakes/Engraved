@@ -6,8 +6,10 @@ local Localization = Engraved.Localization
 
 Localization["enUS"] = {
 	-- ACHERUS = "Acherus", 
+	ALMOST_READY = "Glow when almost ready", 
 	AT_REST_OPACITY = "At rest opacity", 
 	-- BLACKROCK = "Blackrock", 
+	CHARGE_TYPE = "Charge type",
 	CONFIG_MODE = "Config mode",
 	ELDRITCH = "Eldritch",
 	FROSTMOURNE = "Frostmourne",
@@ -36,10 +38,11 @@ Localization["enUS"] = {
 	RUNE = "Rune", 
 	RUNE_THEME = "Rune theme", 
 	-- SHADOWMOON = "Shadowmoon", 
+	SLOW_GLOW = "Slowly increase glow", 
 	SUBTEXT = "These options let you change the appearance of Engraved's combat resource display", 
 	ULDUAR = "Ulduar", 
 	UNLOCK = "Unlock"
-}; 
+}
 
 Localization["zhCN"] = {
 -- Thanks to Curse user fyhcslb for the translation! 
@@ -73,7 +76,8 @@ Localization["zhCN"] = {
 	SUBTEXT = "这些选项可以让你调整 Engraved 战斗资源显示的外观", 
 	ULDUAR = "奥杜尔", 
 	UNLOCK = "解锁"
-};
+}
+setmetatable(Localization.zhCN, {__index = Localization.zhCN})
 
 Localization["zhTW"] = {
 -- Thanks to Curse user gaspy10 for the translation! 
@@ -107,7 +111,8 @@ Localization["zhTW"] = {
 	SUBTEXT = "這些選項讓你可以更改連擊點數的顯示外觀",
 	ULDUAR = "奧杜亞",
 	UNLOCK = "解除鎖定"
-};
+}
+setmetatable(Localization.zhTW, {__index = Localization.enUS})
 
 --[[
 Localization["deDE"] = {}; 
@@ -121,36 +126,42 @@ Localization["ruRU"] = {};
 --]]
 
 function Engraved:LocalizeStrings()
-	Engraved.Strings = Localization[GetLocale()] or Localization["enUS"];
-	Engraved:SetAllTheText();
+	Engraved.Strings = Localization[GetLocale()] or Localization["enUS"]
+	Engraved:SetAllTheText()
 end
 
 function Engraved:SetAllTheText()
 	local strings = Engraved.Strings;
 
-	local optionsPanel = _G["InterfaceOptionsEngravedPanel"];
-	optionsPanel.subtext:SetText(strings.SUBTEXT);
+	local optionsPanel = _G["InterfaceOptionsEngravedPanel"]
+	optionsPanel.subtext:SetText(strings.SUBTEXT)
 
-	optionsPanel.outOfCombatAlpha.Text:SetText(strings.OUT_OF_COMBAT_OPACITY);
-	optionsPanel.outOfCombatAlpha.High:SetText(strings.HIGH);
-	optionsPanel.outOfCombatAlpha.Low:SetText(strings.HIDDEN);
+	optionsPanel.outOfCombatAlpha.Text:SetText(strings.OUT_OF_COMBAT_OPACITY)
+	optionsPanel.outOfCombatAlpha.High:SetText(strings.HIGH)
+	optionsPanel.outOfCombatAlpha.Low:SetText(strings.HIDDEN)
 
-	optionsPanel.runeColor.Text:SetText(strings.RUNE_COLOR);
-	optionsPanel.runeColorBlood.Text:SetText(strings.RUNE_COLOR_BLOOD);
-	optionsPanel.runeColorFrost.Text:SetText(strings.RUNE_COLOR_FROST);
-	optionsPanel.runeColorUnholy.Text:SetText(strings.RUNE_COLOR_UNHOLY);
-	optionsPanel.runeColorDeath.Text:SetText(strings.RUNE_COLOR_DEATH);
+	optionsPanel.runeColor.Text:SetText(strings.RUNE_COLOR)
+	optionsPanel.runeColorBlood.Text:SetText(strings.RUNE_COLOR_BLOOD)
+	optionsPanel.runeColorFrost.Text:SetText(strings.RUNE_COLOR_FROST)
+	optionsPanel.runeColorUnholy.Text:SetText(strings.RUNE_COLOR_UNHOLY)
+	optionsPanel.runeColorDeath.Text:SetText(strings.RUNE_COLOR_DEATH)
 
-	local runeTheme = optionsPanel.runeTheme;
-	runeTheme.Label:SetText(strings.RUNE_THEME);
-	runeTheme.Text:SetText(strings.RUNE_THEME);
-	runeTheme.optionList[1].text = strings.ICECROWN;
-	runeTheme.optionList[2].text = strings.NEXUS;
-	runeTheme.optionList[3].text = strings.ULDUAR;
-	runeTheme.optionList[4].text = strings.FROSTMOURNE;
-	runeTheme.optionList[5].text = strings.ELDRITCH;
+	local runeTheme = optionsPanel.runeTheme
+	runeTheme.Label:SetText(strings.RUNE_THEME)
+	runeTheme.Text:SetText(strings.RUNE_THEME)
+	runeTheme.optionList[1].text = strings.ICECROWN
+	runeTheme.optionList[2].text = strings.NEXUS
+	runeTheme.optionList[3].text = strings.ULDUAR
+	runeTheme.optionList[4].text = strings.FROSTMOURNE
+	runeTheme.optionList[5].text = strings.ELDRITCH
 
-	optionsPanel.configButton.Text:SetText(strings.CONFIG_MODE);
-	optionsPanel.playButton.Text:SetText(strings.PLAY_MODE);
+	local chargeType = optionsPanel.chargeType
+	chargeType.Label:SetText(strings.CHARGE_TYPE)
+	chargeType.Text:SetText(strings.CHARGE_TYPE)
+	chargeType.optionList[1].text = strings.SLOW_GLOW
+	chargeType.optionList[2].text = strings.ALMOST_READY
+
+	optionsPanel.configButton.Text:SetText(strings.CONFIG_MODE)
+	optionsPanel.playButton.Text:SetText(strings.PLAY_MODE)
 end
 

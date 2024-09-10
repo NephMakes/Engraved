@@ -2,8 +2,10 @@
 
 ## Engraved
 
-### v2.4.0 (2024-??-??)
+### v2.4.0 (2024-09-10)
 * Added: Preliminary support for Evoker Essence
+* Added: Death Knights can now choose how to show rune cooldowns
+* Fixed: Cooldowns for Death Knight runes should now be accurate
 
 ### v2.3.0 (2024-08-31)
 * Added: Now supports Frost Mage icicles (Retail). Thanks, huiyuanai709! 

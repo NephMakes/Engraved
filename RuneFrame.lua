@@ -64,6 +64,7 @@ end
 function RuneFrame:SetOptions(options)
 	self:SetRuneTheme(options.RuneTheme)
 	self:SetRuneColor(options.RuneColor)
+	self:SetChargeType(options.ChargeType)
 	self:SetOutOfCombatAlpha(options.OutOfCombatAlpha)
 	self:SetPosition(options.RuneFramePosition)
 	self:SetSize(options.RuneFrameSize)
@@ -98,6 +99,11 @@ function RuneFrame:SetRuneColor(color)
 	for _, rune in pairs(self.Runes) do
 		rune:SetRuneColor(color)
 	end
+end
+
+function RuneFrame:SetChargeType(chargeType)
+	-- How to show cooldown or partial power
+	self.chargeType = chargeType
 end
 
 function RuneFrame:SetOutOfCombatAlpha(outOfCombatAlpha)

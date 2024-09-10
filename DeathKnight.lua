@@ -4,6 +4,7 @@
 local _, Engraved = ...
 local DeathKnight = Engraved.DeathKnight
 local RuneFrame = Engraved.RuneFrame
+-- local OptionsPanel = Engraved.OptionsPanel
 
 local GetTime = GetTime
 
@@ -48,7 +49,6 @@ function RuneFrameMixin:SetDeathKnightWrath()
 	self:RegisterEvent("RUNE_TYPE_UPDATE")
 	self:SetRuneTypeColors()
 	self.SetRuneColor = self.SetRuneColorClassic
-	DeathKnight:ShowClassicRuneColorOptions()  -- Deprecated
 end
 
 function RuneFrameMixin:SetDeathKnightCata()
@@ -58,7 +58,6 @@ function RuneFrameMixin:SetDeathKnightCata()
 	self:RegisterEvent("RUNE_TYPE_UPDATE")
 	self:SetRuneTypeColors()
 	self.SetRuneColor = self.SetRuneColorClassic
-	DeathKnight:ShowClassicRuneColorOptions()  -- Deprecated
 end
 
 function RuneFrameMixin:SetDeathKnightRetail()
@@ -70,7 +69,6 @@ function RuneFrameMixin:UpdateMaxPower()
 	for i, rune in ipairs(self.Runes) do
 		if i < 7 then
 			rune.inUse = true
-			-- rune.on = true
 			rune:Show()
 		else
 			rune.inUse = false
@@ -106,17 +104,15 @@ function RuneFrameMixin:UpdateRuneWrath(runeIndex)
 		elseif rune.on == nil then
 			rune:SetOff()
 		end
-		-- slowGlow
---		if start then
---			rune.animChargeUp.hold:SetDuration(0)
---			rune.animChargeUp.charge:SetDuration(start + duration - GetTime())
---			rune:ChargeUp()
---		end
-		-- almostReady
 		if start then
 			local timeLeft = start + duration - GetTime()
-			rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-			rune.animChargeUp.charge:SetDuration(0.1)
+			-- if self.chargeType == "SLOW_GLOW" then
+				-- rune.animChargeUp.hold:SetDuration(0)
+				-- rune.animChargeUp.charge:SetDuration(timeLeft)
+			-- else  -- "ALMOST_READY"
+				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+				rune.animChargeUp.charge:SetDuration(0.15)
+			-- end
 			rune:ChargeUp()
 		end
 	end
@@ -139,22 +135,21 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 		if startTime then
 			local now = GetTime()
 			local timeLeft = startTime + duration - now
-
-			-- slowGlow
---			local startDelay = startTime - now  -- Can be negative! 
---			local chargeProgress = max(0, (now - startTime)/duration)
---			rune.animChargeUp.hold:SetDuration(max(0, startDelay))
---			rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
---			rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
---			rune:ChargeUp()
-
-			-- almostReady
-			if timeLeft > 1.5 then
-				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-				rune.animChargeUp.charge:SetDuration(0.1)
+			if self.chargeType == "SLOW_GLOW" then
+				local startDelay = startTime - now  -- Can be negative! 
+				local chargeProgress = max(0, (now - startTime)/duration)
+				rune.animChargeUp.hold:SetDuration(max(0, startDelay))
+				rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
+				rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
 			else
-				rune.animChargeUp.hold:SetDuration(0)
-				rune.animChargeUp.charge:SetDuration(0)
+				-- "ALMOST_READY"
+				if timeLeft > 1.5 then
+					rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+					rune.animChargeUp.charge:SetDuration(0.15)
+				else
+					rune.animChargeUp.hold:SetDuration(0)
+					rune.animChargeUp.charge:SetDuration(0)
+				end
 			end
 			rune:ChargeUp()
 		end
@@ -197,16 +192,6 @@ end
 
 
 --[[ OptionsPanel ]]--
-
--- Deprecated
-function DeathKnight:ShowClassicRuneColorOptions()
-	local panel = Engraved.OptionsPanel
-	panel.runeColor:Hide()
-	panel.runeColorBlood:Show()
-	panel.runeColorFrost:Show()
-	panel.runeColorUnholy:Show()
-	panel.runeColorDeath:Show()
-end
 
 -- Deprecated
 function DeathKnight:SetRuneTypeColor(runeType, runeColor)
