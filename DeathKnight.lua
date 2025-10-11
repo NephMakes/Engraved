@@ -169,7 +169,7 @@ end
 function RuneFrameMixin:SetRuneColorClassic()
 	for runeIndex = 1, 6 do
 		self:UpdateRuneType(runeIndex)
-	end	
+	end
 end
 
 function RuneFrameMixin:UpdateRuneType(runeIndex)
@@ -181,8 +181,8 @@ function RuneFrameMixin:UpdateRuneType(runeIndex)
 	end
 end
 
-function RuneFrameMixin:RUNE_POWER_UPDATE(runeIndex, isUsable)
-	self:UpdateRune(runeIndex)
+function RuneFrameMixin:RUNE_POWER_UPDATE()
+	self:UpdatePower()
 end
 
 function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
