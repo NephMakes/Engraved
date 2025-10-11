@@ -1,0 +1,24 @@
+## Interface: 50501
+## Title: Engraved
+## Version: 2.4.1
+## Notes: Track class resources using Warcraft rune art
+## Author: NephMakes
+## DefaultState: enabled
+## SavedVariablesPerCharacter: EngravedOptions
+## X-Curse-Project-ID: 20602
+## X-WoWI-ID: 14570
+
+Engraved.xml
+Engraved.lua
+RuneFrame.lua
+Rune.lua
+DeathKnight.lua
+Rogue.lua
+Druid.lua
+Paladin.lua
+Warlock.lua
+Monk.lua
+OptionsLibrary.lua
+Options.lua
+SlashCommand.lua
+Localization.lua
