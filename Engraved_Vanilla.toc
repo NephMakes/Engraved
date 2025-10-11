@@ -1,10 +1,12 @@
-## Interface: 11503
+## Interface: 11507
 ## Title: Engraved
-## Version: 2.4.0
+## Version: 2.4.1
 ## Notes: Track class resources using Warcraft rune art
 ## Author: NephMakes
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: EngravedOptions
+## X-Curse-Project-ID: 20602
+## X-WoWI-ID: 14570
 
 Engraved.xml
 Engraved.lua
