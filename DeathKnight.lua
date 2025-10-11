@@ -122,6 +122,7 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	-- Runes can wait to start cooling down until others finish
 	-- Called as self:UpdateRune
 	local rune = self.Runes[runeIndex]
+	if not rune then return end
 	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
 	if isReady and not rune.on then
 		rune:TurnOn()

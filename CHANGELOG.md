@@ -1,6 +1,10 @@
 # Changelog
-
 ## Engraved
+
+### v2.4.1 (2024-10-XX)
+* Updated for Retail patch 11.2.5
+* Updated for Vanilla Classic patch 1.15.7
+* Fixed lua error with Death Knight runes on Retail. Thanks mirrdyn_weatherwax! 
 
 ### v2.4.0 (2024-09-10)
 * Added: Preliminary support for Evoker Essence
