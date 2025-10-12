@@ -10,6 +10,7 @@ local GetTime = GetTime
 
 local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 local IS_WRATH = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
+local IS_MISTS = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
 local CHARGE_ALPHA = 0.6  -- Should be animChargeUp.charge.toAlpha
 
 local function round(value, decimalPlaces)
@@ -35,7 +36,7 @@ function RuneFrameMixin:SetDeathKnight()
 	self.powerToken = "RUNES"
 	if IS_WRATH then
 		self:SetDeathKnightWrath()
-	elseif IS_CATA then
+	elseif IS_CATA or IS_MISTS then
 		self:SetDeathKnightCata()
 	else
 		self:SetDeathKnightRetail()
