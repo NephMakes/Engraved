@@ -1,11 +1,12 @@
 # Changelog
 ## Engraved
 
-### v2.4.1 (2024-10-XX)
+### v2.4.1 (2024-10-12)
 * Updated for Retail patch 11.2.5
 * Updated for Vanilla Classic patch 1.15.7
 * Updated for Mist of Pandaria Classic patch 5.5.1
-* Fixed lua error with Death Knight runes on Retail. Thanks mirrdyn_weatherwax! 
+* Fixed lua errors with Death Knight runes on Retail
+* Fixed Death Knight rune colors on Mist of Pandaria Classic
 
 ### v2.4.0 (2024-09-10)
 * Added: Preliminary support for Evoker Essence
