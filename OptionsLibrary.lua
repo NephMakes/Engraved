@@ -390,13 +390,13 @@ function MyAddon:ColorPickerRefresh()
 end
 
 function MyAddon:ColorPickerOnClick()
-    local info = self.value;
-    info.swatchFunc = MyAddon.ColorPickerFunc;
-    info.previousValues = {r = self.value.r, g = self.value.g, b = self.value.b};
-	info.cancelFunc = MyAddon.ColorPickerCancelFunc;
-	ColorPickerFrame.colorPicker = self;
-	ColorPickerFrame.savedVariablesName = self:GetParent().savedVariablesName;
-	ColorPickerFrame:SetupColorPickerAndShow(info);
+    local info = self.value
+    info.swatchFunc = MyAddon.ColorPickerFunc
+    info.previousValues = {r = self.value.r, g = self.value.g, b = self.value.b}
+	info.cancelFunc = MyAddon.ColorPickerCancelFunc
+	ColorPickerFrame.colorPicker = self
+	ColorPickerFrame.savedVariablesName = self:GetParent().savedVariablesName
+	ColorPickerFrame:SetupColorPickerAndShow(info)
 end
 
 function MyAddon:ColorPickerFunc()

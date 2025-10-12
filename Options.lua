@@ -4,6 +4,9 @@ local addonName, Engraved = ...
 local RuneFrame = Engraved.RuneFrame
 local DeathKnight = Engraved.DeathKnight
 
+local IS_MAINLINE = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+
+
 --[[ Defaults ]]-- 
 
 Engraved.Defaults = {
@@ -148,11 +151,11 @@ runeTheme.optionList = {
 }
 
 -- Rune color
-optionsPanel.runeColor = optionsPanel:CreateColorPicker("RuneColor");
-local runeColor = optionsPanel.runeColor;
-runeColor:SetPoint("TOPLEFT", optionsPanel.runeTheme, "BOTTOMLEFT", 18, -28);
-runeColor.onValueChanged = function(value) 
-	EngravedRuneFrame:SetRuneColor(value);
+optionsPanel.runeColor = optionsPanel:CreateColorPicker("RuneColor")
+local runeColor = optionsPanel.runeColor
+runeColor:SetPoint("TOPLEFT", optionsPanel.runeTheme, "BOTTOMLEFT", 18, -28)
+runeColor.onValueChanged = function(value)
+	EngravedRuneFrame:SetRuneColor(value)
 end
 
 -- Blood rune color
@@ -242,12 +245,14 @@ end)
 local OptionsPanel = Engraved.OptionsPanel
 
 function OptionsPanel:ShowDeathKnightOptions()
-	self.runeColor:Hide()
-	self.runeColorBlood:Show()
-	self.runeColorFrost:Show()
-	self.runeColorUnholy:Show()
-	self.runeColorDeath:Show()
-	self.chargeType:Show()
+	if not IS_MAINLINE then
+		self.runeColor:Hide()
+		self.runeColorBlood:Show()
+		self.runeColorFrost:Show()
+		self.runeColorUnholy:Show()
+		self.runeColorDeath:Show()
+		self.chargeType:Show()
+	end
 end
 
 
