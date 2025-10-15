@@ -21,6 +21,8 @@ end
 
 --[[ RuneFrame ]]--
 
+-- For Blizz code see wow-ui-source/Interface/AddOns/Blizzard_UnitFrame/RuneFrame.lua
+
 function RuneFrame:DEATHKNIGHT()
 	-- Called by RuneFrame:SetClass
 	self.inUse = true
@@ -43,29 +45,6 @@ function RuneFrameMixin:SetDeathKnight()
 	end
 end
 
-function RuneFrameMixin:SetDeathKnightWrath()
-	self.UpdatePower = self.UpdatePowerClassic
-	self.UpdateRune = self.UpdateRuneWrath
-
-	self:RegisterEvent("RUNE_TYPE_UPDATE")
-	self:SetRuneTypeColors()
-	self.SetRuneColor = self.SetRuneColorClassic
-end
-
-function RuneFrameMixin:SetDeathKnightCata()
-	self.UpdatePower = self.UpdatePowerClassic
-	self.UpdateRune = self.UpdateRuneRetail
-
-	self:RegisterEvent("RUNE_TYPE_UPDATE")
-	self:SetRuneTypeColors()
-	self.SetRuneColor = self.SetRuneColorClassic
-end
-
-function RuneFrameMixin:SetDeathKnightRetail()
-	self.UpdatePower = self.UpdatePowerRetail
-	self.UpdateRune = self.UpdateRuneRetail
-end
-
 function RuneFrameMixin:UpdateMaxPower()
 	for i, rune in ipairs(self.Runes) do
 		if i < 7 then
@@ -78,44 +57,21 @@ function RuneFrameMixin:UpdateMaxPower()
 	end
 end
 
-function RuneFrameMixin:UpdatePowerClassic()
-	for runeIndex = 1, 6 do
-		self:UpdateRuneType(runeIndex)
-		self:UpdateRune(runeIndex)
-	end
+function RuneFrameMixin:RUNE_POWER_UPDATE()
+	self:UpdatePower()
+end
+
+
+--[[ Retail ]]--
+
+function RuneFrameMixin:SetDeathKnightRetail()
+	self.UpdatePower = self.UpdatePowerRetail
+	self.UpdateRune = self.UpdateRuneRetail
 end
 
 function RuneFrameMixin:UpdatePowerRetail()
 	for runeIndex = 1, 6 do
 		self:UpdateRune(runeIndex)
-	end
-end
-
-function RuneFrameMixin:UpdateRuneWrath(runeIndex)
-	-- Rune cooldowns are independent of each other
-	-- Called as self:UpdateRune
-	local rune = self.Runes[runeIndex]
-	local start, duration, runeReady = GetRuneCooldown(runeIndex)
-	if runeReady and not rune.on then
-		rune:TurnOn()
-		rune:ChargeDown()
-	elseif not runeReady then
-		if rune.on then
-			rune:TurnOff()
-		elseif rune.on == nil then
-			rune:SetOff()
-		end
-		if start then
-			local timeLeft = start + duration - GetTime()
-			-- if self.chargeType == "SLOW_GLOW" then
-				-- rune.animChargeUp.hold:SetDuration(0)
-				-- rune.animChargeUp.charge:SetDuration(timeLeft)
-			-- else  -- "ALMOST_READY"
-				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-				rune.animChargeUp.charge:SetDuration(0.15)
-			-- end
-			rune:ChargeUp()
-		end
 	end
 end
 
@@ -158,6 +114,62 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	end
 end
 
+
+--[[ Classic ]]--
+
+function RuneFrameMixin:SetDeathKnightWrath()
+	self.UpdatePower = self.UpdatePowerClassic
+	self.UpdateRune = self.UpdateRuneWrath
+
+	self:RegisterEvent("RUNE_TYPE_UPDATE")
+	self:SetRuneTypeColors()
+	self.SetRuneColor = self.SetRuneColorClassic
+end
+
+function RuneFrameMixin:SetDeathKnightCata()
+	self.UpdatePower = self.UpdatePowerClassic
+	self.UpdateRune = self.UpdateRuneRetail
+
+	self:RegisterEvent("RUNE_TYPE_UPDATE")
+	self:SetRuneTypeColors()
+	self.SetRuneColor = self.SetRuneColorClassic
+end
+
+function RuneFrameMixin:UpdatePowerClassic()
+	for runeIndex = 1, 6 do
+		self:UpdateRuneType(runeIndex)
+		self:UpdateRune(runeIndex)
+	end
+end
+
+function RuneFrameMixin:UpdateRuneWrath(runeIndex)
+	-- Rune cooldowns are independent of each other
+	-- Called as self:UpdateRune
+	local rune = self.Runes[runeIndex]
+	local start, duration, runeReady = GetRuneCooldown(runeIndex)
+	if runeReady and not rune.on then
+		rune:TurnOn()
+		rune:ChargeDown()
+	elseif not runeReady then
+		if rune.on then
+			rune:TurnOff()
+		elseif rune.on == nil then
+			rune:SetOff()
+		end
+		if start then
+			local timeLeft = start + duration - GetTime()
+			-- if self.chargeType == "SLOW_GLOW" then
+				-- rune.animChargeUp.hold:SetDuration(0)
+				-- rune.animChargeUp.charge:SetDuration(timeLeft)
+			-- else  -- "ALMOST_READY"
+				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+				rune.animChargeUp.charge:SetDuration(0.15)
+			-- end
+			rune:ChargeUp()
+		end
+	end
+end
+
 function RuneFrameMixin:SetRuneTypeColors()
 	local options = EngravedOptions
 	self.runeColor = {}
@@ -182,18 +194,11 @@ function RuneFrameMixin:UpdateRuneType(runeIndex)
 	end
 end
 
-function RuneFrameMixin:RUNE_POWER_UPDATE()
-	self:UpdatePower()
-end
-
 function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
 	if runeIndex then  -- Why do we need a check?
 		self:UpdateRuneType(runeIndex)
 	end
 end
-
-
---[[ OptionsPanel ]]--
 
 -- Deprecated
 function DeathKnight:SetRuneTypeColor(runeType, runeColor)
