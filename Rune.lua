@@ -14,9 +14,8 @@ end
 function Rune:OnLoad()
 	self:SetScript("OnEnter", self.OnEnter)
 	self:SetScript("OnLeave", self.OnLeave)
-	self:SetScript("OnDragStart", self.OnDragStart)
-	self:SetScript("OnDragStop", self.OnDragStop)
-	self:RegisterForDrag("LeftButton")
+	self:SetScript("OnMouseDown", self.OnDragStart)
+	self:SetScript("OnMouseUp", self.OnDragStop)
 
 	self.chargeFinalAlpha = self.animChargeUp.charge:GetToAlpha()
 		-- For DeathKnight
@@ -24,9 +23,8 @@ function Rune:OnLoad()
 	local resizeButton = self.resizeButton
 	resizeButton:SetScript("OnEnter", self.ResizeButtonOnEnter)
 	resizeButton:SetScript("OnLeave", self.ResizeButtonOnLeave)
-	resizeButton:SetScript("OnDragStart", self.OnResizeStart)
-	resizeButton:SetScript("OnDragStop", self.OnResizeStop)
-	resizeButton:RegisterForDrag("LeftButton")
+	resizeButton:SetScript("OnMouseDown", self.OnResizeStart)
+	resizeButton:SetScript("OnMouseUp", self.OnResizeStop)
 end
 
 function Rune:SetRuneColor(color)
