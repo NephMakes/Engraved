@@ -77,16 +77,12 @@ end
 
 function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	-- Runes can wait to start cooling down until others finish
-	-- Called as self:UpdateRune
+	-- Called as self:UpdateRune(runeIndex)
 	local rune = self.Runes[runeIndex]
 	if not rune then return end
 	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
 	if not isReady then
-		if rune.on then
-			rune:TurnOff()
-		elseif rune.on == nil then
-			rune:SetOff()
-		end
+		self:ShowAsNotReady(rune)
 		if startTime then
 			self:ShowAsCharging(rune, startTime, duration)
 		end
@@ -99,6 +95,14 @@ function RuneFrameMixin:ShowAsReady(rune)
 	if not rune.on then
 		rune:TurnOn()
 		rune:ChargeDown()
+	end
+end
+
+function RuneFrameMixin:ShowAsNotReady(rune)
+	if rune.on then
+		rune:TurnOff()
+	elseif rune.on == nil then
+		rune:SetOff()
 	end
 end
 
