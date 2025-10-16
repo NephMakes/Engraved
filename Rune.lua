@@ -53,10 +53,28 @@ function Rune:TurnOff()
 	self.on = false
 end
 
+function Rune:SetOn()
+	self.animOut:Stop()
+	self.animChargeUp:Stop()
+	self:SkipAnimToEnd(self.animIn)
+	self:SkipAnimToEnd(self.animChargeDown)
+	self.on = true
+end
+
 function Rune:SetOff()
-	self.fill:SetAlpha(0)
-	self.glow:SetAlpha(0)
+	self.animIn:Stop()
+	self.animChargeUp:Stop()
+	self:SkipAnimToEnd(self.animOut)
+	self:SkipAnimToEnd(self.animChargeDown)
 	self.on = false
+end
+
+function Rune:SkipAnimToEnd(animation)
+	-- Skip to animation end state
+	if animation then
+		local reverse = false
+		animation:Restart(reverse, animation:GetDuration())
+	end
 end
 
 function Rune:ChargeUp()
@@ -67,6 +85,7 @@ function Rune:ChargeUp()
 end
 
 function Rune:ChargeDown()
+	-- For Death Knight cooldowns
 	self.animChargeUp:Stop()
 	if not self.animChargeDown:IsPlaying() then
 		self.animChargeDown:Play()
