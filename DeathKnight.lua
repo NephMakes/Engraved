@@ -18,6 +18,11 @@ local function round(value, decimalPlaces)
     return math.floor(value * order + 0.5) / order
 end
 
+DeathKnight.RuneFrameMixin = {}
+DeathKnight.RuneMixin = {}
+local RuneFrameMixin = DeathKnight.RuneFrameMixin
+local RuneMixin = DeathKnight.RuneMixin
+
 
 --[[ RuneFrame ]]--
 
@@ -26,12 +31,12 @@ end
 function RuneFrame:DEATHKNIGHT()
 	-- Called by RuneFrame:SetClass
 	self.inUse = true
-	Mixin(self, DeathKnight.RuneFrameMixin)
+	Mixin(self, RuneFrameMixin)
+	for _, rune in pairs(self.Runes) do
+		Mixin(rune, RuneMixin)
+	end
 	self:SetDeathKnight()
 end
-
-DeathKnight.RuneFrameMixin = {}
-local RuneFrameMixin = DeathKnight.RuneFrameMixin
 
 function RuneFrameMixin:SetDeathKnight()
 	self:RegisterEvent("RUNE_POWER_UPDATE")
@@ -76,56 +81,63 @@ function RuneFrameMixin:UpdatePowerRetail()
 end
 
 function RuneFrameMixin:UpdateRuneRetail(runeIndex)
-	-- Runes can wait to start cooling down until others finish
+	-- Deprecated: Roll into UpdatePowerRetail()
 	-- Called as self:UpdateRune(runeIndex)
 	local rune = self.Runes[runeIndex]
 	if not rune then return end
+	rune:UpdateRetail()
+end
+
+function RuneMixin:UpdateRetail()
+	-- Runes can wait to start cooling down until others finish
+	local runeIndex = self:GetID()
 	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
 	if not isReady then
-		self:ShowAsNotReady(rune)
+		self:ShowAsEmpty()
 		if startTime then
-			self:ShowAsCharging(rune, startTime, duration)
+			self:ShowAsCharging(startTime, duration)
 		end
 	else
-		self:ShowAsReady(rune)
+		self:ShowAsReady()
 	end
 end
 
-function RuneFrameMixin:ShowAsReady(rune)
-	if not rune.on then
-		rune:TurnOn()
-		rune:ChargeDown()
+function RuneMixin:ShowAsReady()
+	if not self.on then
+		self:TurnOn()
+		self:ChargeDown()
 	end
 end
 
-function RuneFrameMixin:ShowAsNotReady(rune)
-	if rune.on then
-		rune:TurnOff()
-	elseif rune.on == nil then
-		rune:SetOff()
+function RuneMixin:ShowAsEmpty()
+	if self.on then
+		self:TurnOff()
+	elseif self.on == nil then
+		self:SetOff()
 	end
 end
 
-function RuneFrameMixin:ShowAsCharging(rune, startTime, duration)
+function RuneMixin:ShowAsCharging(startTime, duration)
 	local now = GetTime()
 	local timeLeft = startTime + duration - now
-	if self.chargeType == "SLOW_GLOW" then
+	local runeFrame = self:GetParent()
+	if runeFrame.chargeType == "SLOW_GLOW" then
 		local startDelay = startTime - now  -- Can be negative! 
 		local chargeProgress = max(0, (now - startTime)/duration)
-		rune.animChargeUp.hold:SetDuration(max(0, startDelay))
-		rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
-		rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
+		self.animChargeUp.hold:SetDuration(max(0, startDelay))
+		self.animChargeUp.charge:SetDuration(min(duration, timeLeft))
+		self.animChargeUp.charge:SetFromAlpha(self.chargeFinalAlpha * chargeProgress)
 	else
 		-- "ALMOST_READY"
 		if timeLeft > 1.5 then
-			rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-			rune.animChargeUp.charge:SetDuration(0.15)
+			self.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+			self.animChargeUp.charge:SetDuration(0.15)
 		else
-			rune.animChargeUp.hold:SetDuration(0)
-			rune.animChargeUp.charge:SetDuration(0)
+			self.animChargeUp.hold:SetDuration(0)
+			self.animChargeUp.charge:SetDuration(0)
 		end
 	end
-	rune:ChargeUp()
+	self:ChargeUp()
 end
 
 
