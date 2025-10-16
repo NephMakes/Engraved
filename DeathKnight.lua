@@ -23,6 +23,16 @@ DeathKnight.RuneMixin = {}
 local RuneFrameMixin = DeathKnight.RuneFrameMixin
 local RuneMixin = DeathKnight.RuneMixin
 
+local ShownState = {
+	-- For sorting runes
+	Empty = 1,
+	Charging = 2,
+	AlmostReady = 3,
+	Ready = 4
+}
+
+local MAX_RUNES = 6
+
 
 --[[ RuneFrame ]]--
 
@@ -52,7 +62,7 @@ end
 
 function RuneFrameMixin:UpdateMaxPower()
 	for i, rune in ipairs(self.Runes) do
-		if i < 7 then
+		if i <= MAX_RUNES then
 			rune.inUse = true
 			rune:Show()
 		else
@@ -71,41 +81,59 @@ end
 
 function RuneFrameMixin:SetDeathKnightRetail()
 	self.UpdatePower = self.UpdatePowerRetail
-	self.UpdateRune = self.UpdateRuneRetail
+
+	-- Initialize resource slot each rune graphic should show
+	-- self.runeMapping = {}  -- {[runeIndex] = powerSlot}
+	for i, rune in ipairs(self.Runes) do
+		if i <= MAX_RUNES then
+			-- tinsert(self.runeMapping, i)
+			rune.powerSlot = i
+		end
+	end
 end
 
 function RuneFrameMixin:UpdatePowerRetail()
-	for runeIndex = 1, 6 do
-		self:UpdateRune(runeIndex)
+	-- Update rune states
+	for i, rune in ipairs(self.Runes) do
+		if i <= MAX_RUNES then
+			rune:UpdateShownState()
+		end
+	end
+
+	-- Sort runes by shownState
+	-- Assign new power slots as necessary
+
+	-- Animate runes
+	for i, rune in ipairs(self.Runes) do
+		if i <= MAX_RUNES then
+			rune:Animate()
+		end
 	end
 end
 
-function RuneFrameMixin:UpdateRuneRetail(runeIndex)
-	-- Deprecated: Roll into UpdatePowerRetail()
-	-- Called as self:UpdateRune(runeIndex)
-	local rune = self.Runes[runeIndex]
-	if not rune then return end
-	rune:UpdateRetail()
-end
-
-function RuneMixin:UpdateRetail()
-	-- Runes can wait to start cooling down until others finish
-	local runeIndex = self:GetID()
-	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
+function RuneMixin:UpdateShownState()
+	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
 	if not isReady then
-		self:ShowAsEmpty()
 		if startTime then
-			self:ShowAsCharging(startTime, duration)
+			self.shownState = ShownState.Charging
+			self.startTime = startTime
+			self.duration = duration
+		else
+			self.shownState = ShownState.Empty
 		end
 	else
-		self:ShowAsReady()
+		self.shownState = ShownState.Ready
 	end
 end
 
-function RuneMixin:ShowAsReady()
-	if not self.on then
-		self:TurnOn()
-		self:ChargeDown()
+function RuneMixin:Animate()
+	if self.shownState == ShownState.Empty then
+		self:ShowAsEmpty()
+	elseif self.shownState == ShownState.Charging then
+		self:ShowAsEmpty()
+		self:ShowAsCharging(self.startTime, self.duration)
+	elseif self.shownState == ShownState.Ready then
+		self:ShowAsReady()
 	end
 end
 
@@ -138,6 +166,13 @@ function RuneMixin:ShowAsCharging(startTime, duration)
 		end
 	end
 	self:ChargeUp()
+end
+
+function RuneMixin:ShowAsReady()
+	if not self.on then
+		self:TurnOn()
+		self:ChargeDown()
+	end
 end
 
 
@@ -195,6 +230,29 @@ function RuneFrameMixin:UpdateRuneWrath(runeIndex)
 		end
 	end
 end
+
+function RuneFrameMixin:UpdateRuneRetail(runeIndex)
+	-- Deprecated: Roll into UpdatePowerRetail()
+	-- Called as self:UpdateRune(runeIndex)
+	local rune = self.Runes[runeIndex]
+	if not rune then return end
+	rune:UpdateRetail()
+end
+
+--[[
+function RuneMixin:UpdateRetail()
+	-- Runes can wait to start cooling down until others finish
+	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
+	if not isReady then
+		self:ShowAsEmpty()
+		if startTime then
+			self:ShowAsCharging(startTime, duration)
+		end
+	else
+		self:ShowAsReady()
+	end
+end
+]]--
 
 function RuneFrameMixin:SetRuneTypeColors()
 	local options = EngravedOptions
