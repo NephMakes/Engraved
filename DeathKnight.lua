@@ -88,25 +88,7 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 			rune:SetOff()
 		end
 		if startTime then
-			local now = GetTime()
-			local timeLeft = startTime + duration - now
-			if self.chargeType == "SLOW_GLOW" then
-				local startDelay = startTime - now  -- Can be negative! 
-				local chargeProgress = max(0, (now - startTime)/duration)
-				rune.animChargeUp.hold:SetDuration(max(0, startDelay))
-				rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
-				rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
-			else
-				-- "ALMOST_READY"
-				if timeLeft > 1.5 then
-					rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-					rune.animChargeUp.charge:SetDuration(0.15)
-				else
-					rune.animChargeUp.hold:SetDuration(0)
-					rune.animChargeUp.charge:SetDuration(0)
-				end
-			end
-			rune:ChargeUp()
+			self:ShowAsCharging(rune, startTime, duration)
 		end
 	else
 		self:ShowAsReady(rune)
@@ -118,6 +100,28 @@ function RuneFrameMixin:ShowAsReady(rune)
 		rune:TurnOn()
 		rune:ChargeDown()
 	end
+end
+
+function RuneFrameMixin:ShowAsCharging(rune, startTime, duration)
+	local now = GetTime()
+	local timeLeft = startTime + duration - now
+	if self.chargeType == "SLOW_GLOW" then
+		local startDelay = startTime - now  -- Can be negative! 
+		local chargeProgress = max(0, (now - startTime)/duration)
+		rune.animChargeUp.hold:SetDuration(max(0, startDelay))
+		rune.animChargeUp.charge:SetDuration(min(duration, timeLeft))
+		rune.animChargeUp.charge:SetFromAlpha(rune.chargeFinalAlpha * chargeProgress)
+	else
+		-- "ALMOST_READY"
+		if timeLeft > 1.5 then
+			rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
+			rune.animChargeUp.charge:SetDuration(0.15)
+		else
+			rune.animChargeUp.hold:SetDuration(0)
+			rune.animChargeUp.charge:SetDuration(0)
+		end
+	end
+	rune:ChargeUp()
 end
 
 
