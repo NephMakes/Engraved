@@ -81,10 +81,7 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	local rune = self.Runes[runeIndex]
 	if not rune then return end
 	local startTime, duration, isReady = GetRuneCooldown(runeIndex)
-	if isReady and not rune.on then
-		rune:TurnOn()
-		rune:ChargeDown()
-	elseif not isReady then
+	if not isReady then
 		if rune.on then
 			rune:TurnOff()
 		elseif rune.on == nil then
@@ -111,6 +108,15 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 			end
 			rune:ChargeUp()
 		end
+	else
+		self:ShowAsReady(rune)
+	end
+end
+
+function RuneFrameMixin:ShowAsReady(rune)
+	if not rune.on then
+		rune:TurnOn()
+		rune:ChargeDown()
 	end
 end
 
