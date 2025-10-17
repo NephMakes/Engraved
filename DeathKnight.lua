@@ -4,7 +4,11 @@
 local _, Engraved = ...
 local DeathKnight = Engraved.DeathKnight
 local RuneFrame = Engraved.RuneFrame
--- local OptionsPanel = Engraved.OptionsPanel
+
+DeathKnight.RuneFrameMixin = {}
+DeathKnight.RuneMixin = {}
+local RuneFrameMixin = DeathKnight.RuneFrameMixin
+local RuneMixin = DeathKnight.RuneMixin
 
 local GetTime = GetTime
 
@@ -17,11 +21,6 @@ local function round(value, decimalPlaces)
     local order = 10^(decimalPlaces or 0)
     return math.floor(value * order + 0.5) / order
 end
-
-DeathKnight.RuneFrameMixin = {}
-DeathKnight.RuneMixin = {}
-local RuneFrameMixin = DeathKnight.RuneFrameMixin
-local RuneMixin = DeathKnight.RuneMixin
 
 -- Rune readiness states (for sorting)
 local Readiness = {
