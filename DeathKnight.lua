@@ -49,6 +49,7 @@ end
 function RuneFrameMixin:SetDeathKnight()
 	self:RegisterEvent("RUNE_POWER_UPDATE")
 	self.powerToken = "RUNES"
+	self:SetUsedRunes()
 	if IS_WRATH then
 		self:SetDeathKnightWrath()
 	elseif IS_CATA or IS_MISTS then
@@ -58,11 +59,13 @@ function RuneFrameMixin:SetDeathKnight()
 	end
 end
 
-function RuneFrameMixin:UpdateMaxPower()
+function RuneFrameMixin:SetUsedRunes()
 	-- Death Knights always have six runes
+	self.usedRunes = {}
 	for i, rune in ipairs(self.Runes) do
 		if i <= 6 then
 			rune.inUse = true
+			tinsert(self.usedRunes, rune)
 			rune:Show()
 		else
 			rune.inUse = false
@@ -83,21 +86,17 @@ function RuneFrameMixin:SetDeathKnightRetail()
 
 	-- Initialize resource slot each rune graphic should show
 	self.runeMapping = {}  -- {[runeIndex] = powerSlot}
-	for i, rune in ipairs(self.Runes) do
-		if i <= 6 then
-			tinsert(self.runeMapping, i)
-			rune.powerSlot = i
-		end
+	for i, rune in ipairs(self.usedRunes) do
+		tinsert(self.runeMapping, i)
+		rune.powerSlot = i
 	end
 	self.sortFunction = GenerateClosure(self.ComparePowerSlots, self)
 end
 
 function RuneFrameMixin:UpdatePowerRetail()
 	-- Update rune states
-	for i, rune in ipairs(self.Runes) do
-		if rune.inUse then
-			rune:UpdateShownState()
-		end
+	for i, rune in ipairs(self.usedRunes) do
+		rune:UpdateShownState()
 	end
 
 	-- Sort runeMapping by readiness
@@ -107,10 +106,8 @@ function RuneFrameMixin:UpdatePowerRetail()
 	-- Assign new powerSlot as necessary
 
 	-- Animate runes
-	for i, rune in ipairs(self.Runes) do
-		if rune.inUse then
-			rune:Animate()
-		end
+	for i, rune in ipairs(self.usedRunes) do
+		rune:Animate()
 	end
 end
 
