@@ -10,13 +10,11 @@ DeathKnight.RuneMixin = {}
 local RuneFrameMixin = DeathKnight.RuneFrameMixin
 local RuneMixin = DeathKnight.RuneMixin
 
-local GetTime = GetTime
-
-local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 local IS_WRATH = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
+local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 local IS_MISTS = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
-local CHARGE_ALPHA = 0.6  -- Should be animChargeUp.charge.toAlpha
 
+local GetTime = GetTime
 local function round(value, decimalPlaces)
     local order = 10^(decimalPlaces or 0)
     return math.floor(value * order + 0.5) / order
@@ -81,28 +79,21 @@ end
 function RuneFrameMixin:SetDeathKnightRetail()
 	self.UpdatePower = self.UpdatePowerRetail
 
-	-- Initialize resource slot each rune graphic should show
+	-- Set up rune sorting by readiness
 	self.runeMapping = {}  -- {[runeIndex] = powerSlot}
 	for i, rune in ipairs(self.usedRunes) do
 		tinsert(self.runeMapping, i)
 		rune.powerSlot = i
 	end
-	self.sortFunction = GenerateClosure(self.ComparePowerSlots, self)
+	self.sortSlotsByReadiness = GenerateClosure(self.ComparePowerSlots, self)
 end
 
 function RuneFrameMixin:UpdatePowerRetail()
-	-- Update rune states
 	for i, rune in ipairs(self.usedRunes) do
 		rune:UpdateReadiness()
 	end
-
-	-- Sort runeMapping by readiness
-	table.sort(self.runeMapping, self.sortFunction)
-	-- print(table.concat(self.runeMapping, ", "))
-
-	-- Assign new powerSlot as necessary
-
-	-- Animate runes
+	table.sort(self.runeMapping, self.sortSlotsByReadiness)
+	self:UpdatePowerSlots()
 	for i, rune in ipairs(self.usedRunes) do
 		rune:Animate()
 	end
@@ -114,25 +105,25 @@ function RuneFrameMixin:ComparePowerSlots(slotA, slotB)
 	-- Get runes for each slot
 	local runeA, runeB
 	for i, rune in ipairs(self.Runes) do
-		if not rune.powerSlot then break end
+		-- if not rune.powerSlot then break end
 		if rune.powerSlot == slotA then
 			runeA = rune
 		elseif rune.powerSlot == slotB then
 			runeB = rune
 		end
 	end
-	local readinessA = runeA.readiness
-	local readinessB = runeB.readiness
 
-	-- Handle nil states
-	if readinessA == nil or readinessB == nil then
-		if readinessA == nil and readinessB == nil then
+	-- Handle nils
+	if runeA == nil or runeB == nil then
+		if runeA == nil and runeB == nil then
 			return slotA < slotB
 		end
-		return readinessA ~= nil
+		return runeA ~= nil
 	end
 
-	-- Order by shownState
+	-- Order by readiness
+	local readinessA = runeA.readiness
+	local readinessB = runeB.readiness
 	if readinessA ~= readinessB then
 		return readinessA > readinessB
 	end
@@ -148,6 +139,24 @@ function RuneFrameMixin:ComparePowerSlots(slotA, slotB)
 	return slotA < slotB
 end
 
+function RuneFrameMixin:UpdatePowerSlots()
+	-- Update which resource slot the rune graphic is showing
+	for i, rune in ipairs(self.usedRunes) do
+		newSlot = self.runeMapping[i]
+		if rune.powerSlot ~= newSlot then
+			rune.powerSlot = newSlot
+			for _, oldRune in ipairs(self.usedRunes) do
+				if oldRune.oldSlot == newSlot then
+					rune.readiness = oldRune.oldReadiness
+					rune.startTime = oldRune.oldStart
+					rune.duration = oldRune.oldDuration
+					break
+				end
+			end
+		end
+	end
+end
+
 
 --[[ Rune ]]--
 
@@ -155,6 +164,7 @@ function RuneMixin:UpdateReadiness()
 	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
 	self.startTime = startTime
 	self.duration = duration
+
 	if not isReady then
 		if startTime then
 			self.readiness = Readiness.Charging
@@ -164,6 +174,12 @@ function RuneMixin:UpdateReadiness()
 	else
 		self.readiness = Readiness.Ready
 	end
+
+	-- Set old values in case runes need sorting
+	self.oldSlot = self.powerSlot
+	self.oldReadiness = self.readiness
+	self.oldStart = startTime
+	self.oldDuration = duration
 end
 
 function RuneMixin:Animate()

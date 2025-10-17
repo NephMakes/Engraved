@@ -1,6 +1,9 @@
 # Changelog
 ## Engraved
 
+### v2.4.3 (2024-10-XX)
+* Retail Death Knight runes now sorted like default UI
+
 ### v2.4.2 (2024-10-15)
 * Moving and sizing runes now more responsive to small changes
 
