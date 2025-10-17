@@ -23,8 +23,8 @@ DeathKnight.RuneMixin = {}
 local RuneFrameMixin = DeathKnight.RuneFrameMixin
 local RuneMixin = DeathKnight.RuneMixin
 
-local ShownState = {
-	-- For sorting runes
+-- Rune readiness states (for sorting)
+local Readiness = {
 	Empty = 1,
 	Charging = 2,
 	AlmostReady = 3,
@@ -64,11 +64,9 @@ function RuneFrameMixin:SetUsedRunes()
 	self.usedRunes = {}
 	for i, rune in ipairs(self.Runes) do
 		if i <= 6 then
-			rune.inUse = true
 			tinsert(self.usedRunes, rune)
 			rune:Show()
 		else
-			rune.inUse = false
 			rune:Hide()
 		end
 	end
@@ -96,7 +94,7 @@ end
 function RuneFrameMixin:UpdatePowerRetail()
 	-- Update rune states
 	for i, rune in ipairs(self.usedRunes) do
-		rune:UpdateShownState()
+		rune:UpdateReadiness()
 	end
 
 	-- Sort runeMapping by readiness
@@ -124,20 +122,20 @@ function RuneFrameMixin:ComparePowerSlots(slotA, slotB)
 			runeB = rune
 		end
 	end
-	local stateA = runeA.shownState
-	local stateB = runeB.shownState
+	local readinessA = runeA.readiness
+	local readinessB = runeB.readiness
 
 	-- Handle nil states
-	if stateA == nil or stateB == nil then
-		if stateA == nil and stateB == nil then
+	if readinessA == nil or readinessB == nil then
+		if readinessA == nil and readinessB == nil then
 			return slotA < slotB
 		end
-		return stateA ~= nil
+		return readinessA ~= nil
 	end
 
 	-- Order by shownState
-	if stateA ~= stateB then
-		return stateA > stateB
+	if readinessA ~= readinessB then
+		return readinessA > readinessB
 	end
 
 	-- Order by cooldown startTime
@@ -154,28 +152,28 @@ end
 
 --[[ Rune ]]--
 
-function RuneMixin:UpdateShownState()
+function RuneMixin:UpdateReadiness()
 	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
 	self.startTime = startTime
 	self.duration = duration
 	if not isReady then
 		if startTime then
-			self.shownState = ShownState.Charging
+			self.readiness = Readiness.Charging
 		else
-			self.shownState = ShownState.Empty
+			self.readiness = Readiness.Empty
 		end
 	else
-		self.shownState = ShownState.Ready
+		self.readiness = Readiness.Ready
 	end
 end
 
 function RuneMixin:Animate()
-	if self.shownState == ShownState.Empty then
+	if self.readiness == Readiness.Empty then
 		self:ShowAsEmpty()
-	elseif self.shownState == ShownState.Charging then
+	elseif self.readiness == Readiness.Charging then
 		self:ShowAsEmpty()
 		self:ShowAsCharging(self.startTime, self.duration)
-	elseif self.shownState == ShownState.Ready then
+	elseif self.readiness == Readiness.Ready then
 		self:ShowAsReady()
 	end
 end
