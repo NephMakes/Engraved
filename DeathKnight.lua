@@ -31,8 +31,6 @@ local ShownState = {
 	Ready = 4
 }
 
-local MAX_RUNES = 6
-
 
 --[[ RuneFrame ]]--
 
@@ -61,8 +59,9 @@ function RuneFrameMixin:SetDeathKnight()
 end
 
 function RuneFrameMixin:UpdateMaxPower()
+	-- Death Knights always have six runes
 	for i, rune in ipairs(self.Runes) do
-		if i <= MAX_RUNES then
+		if i <= 6 then
 			rune.inUse = true
 			rune:Show()
 		else
@@ -83,43 +82,58 @@ function RuneFrameMixin:SetDeathKnightRetail()
 	self.UpdatePower = self.UpdatePowerRetail
 
 	-- Initialize resource slot each rune graphic should show
-	-- self.runeMapping = {}  -- {[runeIndex] = powerSlot}
+	self.runeMapping = {}  -- {[runeIndex] = powerSlot}
 	for i, rune in ipairs(self.Runes) do
-		if i <= MAX_RUNES then
-			-- tinsert(self.runeMapping, i)
-			rune.runeIndex = i
+		if i <= 6 then
+			tinsert(self.runeMapping, i)
 			rune.powerSlot = i
 		end
 	end
+	self.sortFunction = GenerateClosure(self.ComparePowerSlots, self)
 end
 
 function RuneFrameMixin:UpdatePowerRetail()
 	-- Update rune states
 	for i, rune in ipairs(self.Runes) do
-		if i <= MAX_RUNES then
+		if rune.inUse then
 			rune:UpdateShownState()
 		end
 	end
 
-	-- Sort runes by shownState
-	-- Assign new power slots as necessary
+	-- Sort runeMapping by readiness
+	table.sort(self.runeMapping, self.sortFunction)
+	-- print(table.concat(self.runeMapping, ", "))
+
+	-- Assign new powerSlot as necessary
 
 	-- Animate runes
 	for i, rune in ipairs(self.Runes) do
-		if i <= MAX_RUNES then
+		if rune.inUse then
 			rune:Animate()
 		end
 	end
 end
 
-function RuneFrameMixin:CompareRunes(runeA, runeB)
+function RuneFrameMixin:ComparePowerSlots(slotA, slotB)
+	-- return true if first should come before second
+
+	-- Get runes for each slot
+	local runeA, runeB
+	for i, rune in ipairs(self.Runes) do
+		if not rune.powerSlot then break end
+		if rune.powerSlot == slotA then
+			runeA = rune
+		elseif rune.powerSlot == slotB then
+			runeB = rune
+		end
+	end
 	local stateA = runeA.shownState
 	local stateB = runeB.shownState
 
 	-- Handle nil states
 	if stateA == nil or stateB == nil then
 		if stateA == nil and stateB == nil then
-			return runeA.runeIndex > runeB.runeIndex
+			return slotA < slotB
 		end
 		return stateA ~= nil
 	end
@@ -136,8 +150,8 @@ function RuneFrameMixin:CompareRunes(runeA, runeB)
 		return startTimeA < startTimeB
 	end
 
-	-- Order by runeIndex
-	return runeA.runeIndex > runeB.runeIndex
+	-- Order by powerSlot
+	return slotA < slotB
 end
 
 
@@ -271,7 +285,6 @@ function RuneFrameMixin:UpdateRuneRetail(runeIndex)
 	rune:UpdateRetail()
 end
 
---[[
 function RuneMixin:UpdateRetail()
 	-- Runes can wait to start cooling down until others finish
 	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
@@ -284,7 +297,6 @@ function RuneMixin:UpdateRetail()
 		self:ShowAsReady()
 	end
 end
-]]--
 
 function RuneFrameMixin:SetRuneTypeColors()
 	local options = EngravedOptions
