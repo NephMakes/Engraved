@@ -77,7 +77,7 @@ function RuneFrameMixin:RUNE_POWER_UPDATE()
 end
 
 
---[[ Retail ]]--
+--[[ RuneFrame ]]--
 
 function RuneFrameMixin:SetDeathKnightRetail()
 	self.UpdatePower = self.UpdatePowerRetail
@@ -87,6 +87,7 @@ function RuneFrameMixin:SetDeathKnightRetail()
 	for i, rune in ipairs(self.Runes) do
 		if i <= MAX_RUNES then
 			-- tinsert(self.runeMapping, i)
+			rune.runeIndex = i
 			rune.powerSlot = i
 		end
 	end
@@ -111,13 +112,44 @@ function RuneFrameMixin:UpdatePowerRetail()
 	end
 end
 
+function RuneFrameMixin:CompareRunes(runeA, runeB)
+	local stateA = runeA.shownState
+	local stateB = runeB.shownState
+
+	-- Handle nil states
+	if stateA == nil or stateB == nil then
+		if stateA == nil and stateB == nil then
+			return runeA.runeIndex > runeB.runeIndex
+		end
+		return stateA ~= nil
+	end
+
+	-- Order by shownState
+	if stateA ~= stateB then
+		return stateA > stateB
+	end
+
+	-- Order by cooldown startTime
+	local startTimeA = runeA.startTime
+	local startTimeB = runeB.startTime
+	if startTimeA ~= startTimeB then
+		return startTimeA < startTimeB
+	end
+
+	-- Order by runeIndex
+	return runeA.runeIndex > runeB.runeIndex
+end
+
+
+--[[ Rune ]]--
+
 function RuneMixin:UpdateShownState()
 	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
+	self.startTime = startTime
+	self.duration = duration
 	if not isReady then
 		if startTime then
 			self.shownState = ShownState.Charging
-			self.startTime = startTime
-			self.duration = duration
 		else
 			self.shownState = ShownState.Empty
 		end
