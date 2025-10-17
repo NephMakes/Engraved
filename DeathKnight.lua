@@ -38,24 +38,14 @@ local Readiness = {
 function RuneFrame:DEATHKNIGHT()
 	-- Called by RuneFrame:SetClass
 	self.inUse = true
+	self.powerToken = "RUNES"
+	self:RegisterEvent("RUNE_POWER_UPDATE")
 	Mixin(self, RuneFrameMixin)
 	for _, rune in pairs(self.Runes) do
 		Mixin(rune, RuneMixin)
 	end
-	self:SetDeathKnight()
-end
-
-function RuneFrameMixin:SetDeathKnight()
-	self:RegisterEvent("RUNE_POWER_UPDATE")
-	self.powerToken = "RUNES"
 	self:SetUsedRunes()
-	if IS_WRATH then
-		self:SetDeathKnightWrath()
-	elseif IS_CATA or IS_MISTS then
-		self:SetDeathKnightCata()
-	else
-		self:SetDeathKnightRetail()
-	end
+	self:SetExpansion()
 end
 
 function RuneFrameMixin:SetUsedRunes()
@@ -71,12 +61,22 @@ function RuneFrameMixin:SetUsedRunes()
 	end
 end
 
-function RuneFrameMixin:RUNE_POWER_UPDATE()
-	self:UpdatePower()
+function RuneFrameMixin:SetExpansion()
+	if IS_WRATH then
+		self:SetDeathKnightWrath()
+	elseif IS_CATA or IS_MISTS then
+		self:SetDeathKnightCata()
+	else
+		self:SetDeathKnightRetail()
+	end
 end
 
 
 --[[ RuneFrame ]]--
+
+function RuneFrameMixin:RUNE_POWER_UPDATE()
+	self:UpdatePower()
+end
 
 function RuneFrameMixin:SetDeathKnightRetail()
 	self.UpdatePower = self.UpdatePowerRetail
