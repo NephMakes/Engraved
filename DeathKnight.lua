@@ -250,7 +250,6 @@ function RuneFrameMixin:SetRuneTypeColors()
 	self.runeColor[2] = options.RuneColorFrost
 	self.runeColor[3] = options.RuneColorUnholy
 	self.runeColor[4] = options.RuneColorDeath
-	-- aRE THESE ACCURATE FOR mISTS?
 end
 
 function RuneFrameMixin:SetRuneColorClassic()
@@ -265,92 +264,16 @@ end
 --[[ Classic (old) ]]--
 
 --[[
-function RuneFrameMixin:SetDeathKnightWrath()
-	self.UpdatePower = self.UpdatePowerClassic
-	self.UpdateRune = self.UpdateRuneWrath
-
-	self:RegisterEvent("RUNE_TYPE_UPDATE")
-	self:SetRuneTypeColors()
-	self.SetRuneColor = self.SetRuneColorClassic
-end
-
-function RuneFrameMixin:SetDeathKnightCata()
-	self.UpdatePower = self.UpdatePowerClassic
-	self.UpdateRune = self.UpdateRuneRetail
-
-	self:RegisterEvent("RUNE_TYPE_UPDATE")
-	self:SetRuneTypeColors()
-	self.SetRuneColor = self.SetRuneColorClassic
+function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
+	if runeIndex then  -- Why do we need a check?
+		self:UpdateRuneType(runeIndex)
+	end
 end
 
 function RuneFrameMixin:UpdatePowerClassic()
 	for runeIndex = 1, 6 do
 		self:UpdateRuneType(runeIndex)
 		self:UpdateRune(runeIndex)
-	end
-end
-
-function RuneFrameMixin:UpdateRuneWrath(runeIndex)
-	-- Rune cooldowns are independent of each other
-	-- Called as self:UpdateRune
-	local rune = self.Runes[runeIndex]
-	local start, duration, runeReady = GetRuneCooldown(runeIndex)
-	if runeReady and not rune.on then
-		rune:TurnOn()
-		rune:ChargeDown()
-	elseif not runeReady then
-		if rune.on then
-			rune:TurnOff()
-		elseif rune.on == nil then
-			rune:SetOff()
-		end
-		if start then
-			local timeLeft = start + duration - GetTime()
-			-- if self.chargeType == "SLOW_GLOW" then
-				-- rune.animChargeUp.hold:SetDuration(0)
-				-- rune.animChargeUp.charge:SetDuration(timeLeft)
-			-- else  -- "ALMOST_READY"
-				rune.animChargeUp.hold:SetDuration(timeLeft - 1.5)
-				rune.animChargeUp.charge:SetDuration(0.15)
-			-- end
-			rune:ChargeUp()
-		end
-	end
-end
-
-function RuneFrameMixin:UpdateRuneRetail(runeIndex)
-	-- Deprecated: Roll into UpdatePowerRetail()
-	-- Called as self:UpdateRune(runeIndex)
-	local rune = self.Runes[runeIndex]
-	if not rune then return end
-	rune:UpdateRetail()
-end
-
-function RuneMixin:UpdateRetail()
-	-- Runes can wait to start cooling down until others finish
-	local startTime, duration, isReady = GetRuneCooldown(self.powerSlot)
-	if not isReady then
-		self:ShowAsEmpty()
-		if startTime then
-			self:ShowAsCharging(startTime, duration)
-		end
-	else
-		self:ShowAsReady()
-	end
-end
-
-function RuneFrameMixin:SetRuneTypeColors()
-	local options = EngravedOptions
-	self.runeColor = {}
-	self.runeColor[1] = options.RuneColorBlood
-	self.runeColor[2] = options.RuneColorFrost
-	self.runeColor[3] = options.RuneColorUnholy
-	self.runeColor[4] = options.RuneColorDeath
-end
-
-function RuneFrameMixin:SetRuneColorClassic()
-	for runeIndex = 1, 6 do
-		self:UpdateRuneType(runeIndex)
 	end
 end
 
@@ -363,8 +286,8 @@ function RuneFrameMixin:UpdateRuneType(runeIndex)
 	end
 end
 
-function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
-	if runeIndex then  -- Why do we need a check?
+function RuneFrameMixin:SetRuneColorClassic()
+	for runeIndex = 1, 6 do
 		self:UpdateRuneType(runeIndex)
 	end
 end
