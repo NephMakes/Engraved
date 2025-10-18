@@ -1,5 +1,6 @@
 -- Death Knight runes
 -- File not loaded if Classic Era
+-- For Blizz code see wow-ui-source/Interface/AddOns/Blizzard_UnitFrame/RuneFrame.lua
 
 local _, Engraved = ...
 local DeathKnight = Engraved.DeathKnight
@@ -10,8 +11,6 @@ DeathKnight.RuneMixin = {}
 local RuneFrameMixin = DeathKnight.RuneFrameMixin
 local RuneMixin = DeathKnight.RuneMixin
 
-local IS_WRATH = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
-local IS_CATA = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
 local IS_MISTS = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
 
 local GetTime = GetTime
@@ -31,8 +30,6 @@ local Readiness = {
 
 --[[ RuneFrame ]]--
 
--- For Blizz code see wow-ui-source/Interface/AddOns/Blizzard_UnitFrame/RuneFrame.lua
-
 function RuneFrame:DEATHKNIGHT()
 	-- Called by RuneFrame:SetClass
 	self.inUse = true
@@ -44,6 +41,10 @@ function RuneFrame:DEATHKNIGHT()
 	end
 	self:SetUsedRunes()
 	self:SetExpansion()
+end
+
+function RuneFrameMixin:RUNE_POWER_UPDATE()
+	self:UpdatePower()
 end
 
 function RuneFrameMixin:SetUsedRunes()
@@ -60,26 +61,16 @@ function RuneFrameMixin:SetUsedRunes()
 end
 
 function RuneFrameMixin:SetExpansion()
-	if IS_WRATH then
-		self:SetDeathKnightWrath()
-	elseif IS_CATA or IS_MISTS then
-		self:SetDeathKnightCata()
+	if IS_MISTS then
+		self:SetDeathKnightMists()
 	else
 		self:SetDeathKnightRetail()
 	end
 end
 
-
---[[ RuneFrame ]]--
-
-function RuneFrameMixin:RUNE_POWER_UPDATE()
-	self:UpdatePower()
-end
-
 function RuneFrameMixin:SetDeathKnightRetail()
+	-- Only one runeType, sorted by readiness
 	self.UpdatePower = self.UpdatePowerRetail
-
-	-- Set up rune sorting by readiness
 	self.runeMapping = {}  -- {[runeIndex] = powerSlot}
 	for i, rune in ipairs(self.usedRunes) do
 		tinsert(self.runeMapping, i)
@@ -140,7 +131,7 @@ function RuneFrameMixin:ComparePowerSlots(slotA, slotB)
 end
 
 function RuneFrameMixin:UpdatePowerSlots()
-	-- Update which resource slot the rune graphic is showing
+	-- Update which resource slot rune graphics show
 	for i, rune in ipairs(self.usedRunes) do
 		newSlot = self.runeMapping[i]
 		if rune.powerSlot ~= newSlot then
@@ -234,6 +225,45 @@ end
 
 --[[ Classic ]]--
 
+function RuneFrameMixin:SetDeathKnightMists()
+	-- Three rune types. They don't change type.
+	self.UpdatePower = self.UpdatePowerClassic
+	for i, rune in ipairs(self.usedRunes) do
+		rune.powerSlot = i
+	end
+	self:SetRuneTypeColors()
+	self.SetRuneColor = self.SetRuneColorClassic
+end
+
+function RuneFrameMixin:UpdatePowerClassic()
+	for i, rune in ipairs(self.usedRunes) do
+		rune:UpdateReadiness()
+		rune:Animate()
+	end
+end
+
+function RuneFrameMixin:SetRuneTypeColors()
+	local options = EngravedOptions
+	self.runeColor = {}
+	self.runeColor[1] = options.RuneColorBlood
+	self.runeColor[2] = options.RuneColorFrost
+	self.runeColor[3] = options.RuneColorUnholy
+	self.runeColor[4] = options.RuneColorDeath
+	-- aRE THESE ACCURATE FOR mISTS?
+end
+
+function RuneFrameMixin:SetRuneColorClassic()
+	for i, rune in ipairs(self.usedRunes) do
+		local runeType = GetRuneType(i)
+		local color = self.runeColor[runeType]
+		rune:SetRuneColor(color)
+	end
+end
+
+
+--[[ Classic (old) ]]--
+
+--[[
 function RuneFrameMixin:SetDeathKnightWrath()
 	self.UpdatePower = self.UpdatePowerClassic
 	self.UpdateRune = self.UpdateRuneWrath
@@ -337,6 +367,7 @@ function RuneFrameMixin:RUNE_TYPE_UPDATE(runeIndex)
 		self:UpdateRuneType(runeIndex)
 	end
 end
+--]]
 
 -- Deprecated
 function DeathKnight:SetRuneTypeColor(runeType, runeColor)
