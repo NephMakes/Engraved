@@ -53,6 +53,7 @@ function RuneFrameMixin:SetUsedRunes()
 	for i, rune in ipairs(self.Runes) do
 		if i <= 6 then
 			tinsert(self.usedRunes, rune)
+			rune.inUse = true
 			rune:Show()
 		else
 			rune:Hide()
